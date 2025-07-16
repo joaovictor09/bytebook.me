@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it } from 'vitest'
 import { FetchUserScrapsUseCase } from './fetch-user-scraps'
 import { InMemoryScrapsRepository } from 'test/repositories/in-memory-scraps-repository'
 
