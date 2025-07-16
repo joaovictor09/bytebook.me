@@ -6,6 +6,8 @@ import { CommentScrapController } from './comment-scrap.controller'
 import { CommentScrapUseCase } from '@/use-cases/scraps/comment-scrap'
 import { DeleteScrapController } from './delete-scrap.controller'
 import { DeleteScrapUseCase } from '@/use-cases/scraps/delete-scrap'
+import { DeleteScrapCommentController } from './delete-scrap-comment.controller'
+import { DeleteScrapCommentUseCase } from '@/use-cases/scraps/delete-scrap-comment'
 
 @Module({
   imports: [DatabaseModule],
@@ -13,7 +15,13 @@ import { DeleteScrapUseCase } from '@/use-cases/scraps/delete-scrap'
     SendScrapController,
     DeleteScrapController,
     CommentScrapController,
+    DeleteScrapCommentController,
   ],
-  providers: [SendScrapUseCase, CommentScrapUseCase, DeleteScrapUseCase],
+  providers: [
+    SendScrapUseCase,
+    CommentScrapUseCase,
+    DeleteScrapUseCase,
+    DeleteScrapCommentUseCase,
+  ],
 })
 export class ScrapsControllerModule {}

@@ -1,13 +1,15 @@
-import type { ScrapCommentsRepository } from '@/repositories/scrap-comments-repository'
+import { ScrapCommentsRepository } from '@/repositories/scrap-comments-repository'
 import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
 import { UnauthorizedError } from '../_errors/unauthorized-error'
-import type { ScrapsRepository } from '@/repositories/scraps-repository'
+import { ScrapsRepository } from '@/repositories/scraps-repository'
+import { Injectable } from '@nestjs/common'
 
 interface DeleteScrapCommentUseCaseRequest {
   scrapCommentId: string
   userId: string
 }
 
+@Injectable()
 export class DeleteScrapCommentUseCase {
   constructor(
     private scrapCommentsRepository: ScrapCommentsRepository,
