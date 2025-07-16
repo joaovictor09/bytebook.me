@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Param, Post } from '@nestjs/common'
+import { Body, Controller, Param, Post } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import z from 'zod'
@@ -18,7 +18,6 @@ export class CommentScrapController {
   constructor(private commentScrap: CommentScrapUseCase) {}
 
   @Post()
-  @HttpCode(201)
   async handle(
     @Param('scrapId') scrapId: string,
     @Body(bodyValidationPipe) body: CommentScrapBodySchema,

@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Param, Post } from '@nestjs/common'
+import { Body, Controller, Param, Post } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { SendScrapUseCase } from '@/use-cases/scraps/send-scrap'
@@ -18,7 +18,6 @@ export class SendScrapController {
   constructor(private sendScrap: SendScrapUseCase) {}
 
   @Post()
-  @HttpCode(201)
   async handle(
     @Param('userId') userId: string,
     @Body(bodyValidationPipe) body: SendScrapBodySchema,

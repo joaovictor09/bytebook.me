@@ -1,5 +1,6 @@
-import type { Scrap } from '@prisma/client'
-import type { ScrapsRepository } from '@/repositories/scraps-repository'
+import { Scrap } from '@prisma/client'
+import { ScrapsRepository } from '@/repositories/scraps-repository'
+import { Injectable } from '@nestjs/common'
 
 interface FetchUserScrapsUseCaseRequest {
   userId: string
@@ -9,6 +10,7 @@ interface FetchUserScrapsUseCaseResponse {
   scraps: Scrap[]
 }
 
+@Injectable()
 export class FetchUserScrapsUseCase {
   constructor(private scrapsRepository: ScrapsRepository) {}
 
