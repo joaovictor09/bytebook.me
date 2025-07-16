@@ -1,14 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { FetchUserConnections } from './fetch-user-connections'
+import { FetchUserConnectionsUseCase } from './fetch-user-connections'
 import { InMemoryConnectionsRepository } from 'test/repositories/in-memory-connections-repository'
 
 let connectionsRepository: InMemoryConnectionsRepository
-let sut: FetchUserConnections
+let sut: FetchUserConnectionsUseCase
 
 describe('Fetch User Connections Use Case', () => {
   beforeEach(() => {
     connectionsRepository = new InMemoryConnectionsRepository()
-    sut = new FetchUserConnections(connectionsRepository)
+    sut = new FetchUserConnectionsUseCase(connectionsRepository)
   })
 
   it('should fetch all connections of a user without filters', async () => {

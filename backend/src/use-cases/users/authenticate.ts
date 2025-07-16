@@ -1,7 +1,8 @@
-import type { UsersRepository } from '@/repositories/users-repository'
+import { UsersRepository } from '@/repositories/users-repository'
 import { InvalidCredentialsError } from '../_errors/invalid-credentials-error'
-import type { HashComparer } from '@/cryptography/hash-comparer'
-import type { Encrypter } from '@/cryptography/encrypter'
+import { HashComparer } from '@/cryptography/hash-comparer'
+import { Encrypter } from '@/cryptography/encrypter'
+import { Injectable } from '@nestjs/common'
 
 interface AuthenticateUseCaseRequest {
   email: string
@@ -12,6 +13,7 @@ interface AuthenticateUseCaseResponse {
   accessToken: string
 }
 
+@Injectable()
 export class AuthenticateUseCase {
   constructor(
     private usersRepository: UsersRepository,

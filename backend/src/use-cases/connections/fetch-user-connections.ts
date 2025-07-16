@@ -1,5 +1,6 @@
-import type { ConnectionsRepository } from '@/repositories/connections-repository'
-import type { Connection } from '@prisma/client'
+import { ConnectionsRepository } from '@/repositories/connections-repository'
+import { Injectable } from '@nestjs/common'
+import { Connection } from '@prisma/client'
 
 interface FetchUserConnectionsRequest {
   userId: string
@@ -11,7 +12,8 @@ interface FetchUserConnectionsResponse {
   connections: Connection[]
 }
 
-export class FetchUserConnections {
+@Injectable()
+export class FetchUserConnectionsUseCase {
   constructor(private connectionsRepository: ConnectionsRepository) {}
 
   async execute({
