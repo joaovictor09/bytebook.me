@@ -1,8 +1,8 @@
 import { AcceptConnectionRequestUseCase } from './accept-connection-request'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { InMemoryConnectionsRepository } from 'test/repositories/in-memory-connections-repository'
-import { ResourceNotFoundError } from '../errors/resource-not-found-error'
-import { InvalidConnectionRequestError } from '../errors/invalid-connection-request'
+import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
+import { InvalidConnectionRequestError } from '../_errors/invalid-connection-request'
 
 let usersRepository: InMemoryUsersRepository
 let connectionsRepository: InMemoryConnectionsRepository

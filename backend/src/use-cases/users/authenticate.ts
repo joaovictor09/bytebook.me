@@ -1,5 +1,5 @@
 import type { UsersRepository } from '@/repositories/users-repository'
-import { InvalidCredentialsError } from '../errors/invalid-credentials-error'
+import { InvalidCredentialsError } from '../_errors/invalid-credentials-error'
 import type { HashComparer } from '@/cryptography/hash-comparer'
 import type { Encrypter } from '@/cryptography/encrypter'
 

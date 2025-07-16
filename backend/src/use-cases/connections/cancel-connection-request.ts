@@ -1,7 +1,7 @@
 import type { UsersRepository } from '@/repositories/users-repository'
 import type { ConnectionsRepository } from '@/repositories/connections-repository'
-import { ResourceNotFoundError } from '../errors/resource-not-found-error'
-import { InvalidConnectionRequestError } from '../errors/invalid-connection-request'
+import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
+import { InvalidConnectionRequestError } from '../_errors/invalid-connection-request'
 
 interface CancelConnectionRequestUseCaseRequest {
   userId: string
