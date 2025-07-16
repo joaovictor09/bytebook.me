@@ -1,5 +1,6 @@
-import type { ScrapComment } from '@prisma/client'
-import type { ScrapCommentsRepository } from '@/repositories/scrap-comments-repository'
+import { ScrapComment } from '@prisma/client'
+import { ScrapCommentsRepository } from '@/repositories/scrap-comments-repository'
+import { Injectable } from '@nestjs/common'
 
 interface FetchScrapCommentsUseCaseRequest {
   scrapId: string
@@ -9,6 +10,7 @@ interface FetchScrapCommentsUseCaseResponse {
   comments: ScrapComment[]
 }
 
+@Injectable()
 export class FetchScrapCommentsUseCase {
   constructor(private scrapCommentsRepository: ScrapCommentsRepository) {}
 

@@ -10,6 +10,8 @@ import { DeleteScrapCommentController } from './delete-scrap-comment.controller'
 import { DeleteScrapCommentUseCase } from '@/use-cases/scraps/delete-scrap-comment'
 import { FetchUserScrapsController } from './fetch-user-scraps.controller'
 import { FetchUserScrapsUseCase } from '@/use-cases/scraps/fetch-user-scraps'
+import { FetchScrapCommentsController } from './fetch-scrap-comments.controller'
+import { FetchScrapCommentsUseCase } from '@/use-cases/scraps/fetch-scrap-comments'
 
 @Module({
   imports: [DatabaseModule],
@@ -19,6 +21,7 @@ import { FetchUserScrapsUseCase } from '@/use-cases/scraps/fetch-user-scraps'
     CommentScrapController,
     DeleteScrapCommentController,
     FetchUserScrapsController,
+    FetchScrapCommentsController,
   ],
   providers: [
     SendScrapUseCase,
@@ -26,6 +29,7 @@ import { FetchUserScrapsUseCase } from '@/use-cases/scraps/fetch-user-scraps'
     DeleteScrapUseCase,
     DeleteScrapCommentUseCase,
     FetchUserScrapsUseCase,
+    FetchScrapCommentsUseCase,
   ],
 })
 export class ScrapsControllerModule {}
