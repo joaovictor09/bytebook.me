@@ -1,4 +1,4 @@
-import { Controller, HttpCode, Param, Patch } from '@nestjs/common'
+import { Controller, Delete, Param } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { RemoveConnectionUseCase } from '@/use-cases/connections/remove-connection'
@@ -7,8 +7,7 @@ import { RemoveConnectionUseCase } from '@/use-cases/connections/remove-connecti
 export class RemoveConnectionController {
   constructor(private removeConnection: RemoveConnectionUseCase) {}
 
-  @Patch()
-  @HttpCode(201)
+  @Delete()
   async handle(
     @Param('connectionId') connectionId: string,
     @CurrentUser() user: UserPayload,

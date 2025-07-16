@@ -58,10 +58,10 @@ describe('Remove Connection (E2E)', () => {
     const accessToken = jwt.sign({ sub: userAId })
 
     const response = await request(app.getHttpServer())
-      .patch(`/connections/remove/${connection.id}`)
+      .delete(`/connections/remove/${connection.id}`)
       .set('Authorization', `Bearer ${accessToken}`)
 
-    expect(response.statusCode).toBe(201)
+    expect(response.statusCode).toBe(200)
 
     const deletedConnection = await prisma.connection.findUnique({
       where: { id: connection.id },
