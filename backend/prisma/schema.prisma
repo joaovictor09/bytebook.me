@@ -27,11 +27,15 @@ model User {
   created_at   DateTime @default(now())
 
   // Relacionamentos de conexões
-  sentConnections     Connection[]   @relation("ConnectionSender")
-  receivedConnections Connection[]   @relation("ConnectionRecipient")
-  sentScraps          Scrap[]        @relation("ScrapSender")
-  receivedScraps      Scrap[]        @relation("ScrapRecipient")
+  sentConnections     Connection[]      @relation("ConnectionSender")
+  receivedConnections Connection[]      @relation("ConnectionRecipient")
+  sentScraps          Scrap[]           @relation("ScrapSender")
+  receivedScraps      Scrap[]           @relation("ScrapRecipient")
   scrapComments       ScrapComment[]
+  communities         Community[]
+  communityMembers    CommunityMember[]
+  topics              Topic[]
+  topicComments       TopicComment[]
 
   @@map("users")
 }
@@ -85,4 +89,60 @@ model ScrapComment {
   sender User  @relation(fields: [senderId], references: [id], onDelete: Cascade)
 
   @@map("scrap_comments")
+}
+
+model Community {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  ownerId     String   @map("owner_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  memberCount Int      @default(0) @map("member_count")
+
+  owner   User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  members CommunityMember[]
+  topics  Topic[]
+
+  @@map("communities")
+}
+
+model CommunityMember {
+  id          String   @id @default(uuid())
+  communityId String   @map("community_id")
+  userId      String   @map("user_id")
+  joinedAt    DateTime @default(now()) @map("joined_at")
+
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([communityId, userId])
+  @@map("community_members")
+}
+
+model Topic {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  communityId String   @map("community_id")
+  authorId    String   @map("author_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  community Community      @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments  TopicComment[]
+
+  @@map("topics")
+}
+
+model TopicComment {
+  id        String   @id @default(uuid())
+  message   String
+  topicId   String   @map("topic_id")
+  authorId  String   @map("author_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  topic  Topic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  author User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("topic_comments")
 }
