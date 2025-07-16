@@ -30,8 +30,8 @@ export class RemoveConnectionUseCase {
     }
 
     if (
-      connection.requesterId !== user.id &&
-      connection.addresseeId !== user.id
+      connection.senderId !== user.id &&
+      connection.recipientId !== user.id
     ) {
       throw new InvalidConnectionRequestError()
     }

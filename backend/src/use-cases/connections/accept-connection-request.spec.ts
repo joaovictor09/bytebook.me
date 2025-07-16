@@ -19,25 +19,25 @@ describe('Accept Connection Request UseCase', () => {
   })
 
   it('should accept a pending connection request', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
     })
 
     const { connection: acceptedConnection } = await sut.execute({
-      userId: addressee.id,
+      userId: recipient.id,
       connectionId: connection.id,
     })
 
@@ -46,21 +46,21 @@ describe('Accept Connection Request UseCase', () => {
   })
 
   it('should not accept a connection if the user does not exist', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
     })
 
     await expect(() =>
@@ -87,54 +87,54 @@ describe('Accept Connection Request UseCase', () => {
   })
 
   it('should not allow accepting if connection status is not PENDING', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
       status: 'ACCEPTED',
     })
 
     await expect(() =>
       sut.execute({
-        userId: addressee.id,
+        userId: recipient.id,
         connectionId: connection.id,
       }),
     ).rejects.toBeInstanceOf(InvalidConnectionRequestError)
   })
 
-  it('should not allow a user who is not the addressee to accept the request', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+  it('should not allow a user who is not the recipient to accept the request', async () => {
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
     })
 
-    // requester tenta aceitar a própria solicitação
+    // sender tenta aceitar a própria solicitação
     await expect(() =>
       sut.execute({
-        userId: requester.id,
+        userId: sender.id,
         connectionId: connection.id,
       }),
     ).rejects.toBeInstanceOf(InvalidConnectionRequestError)

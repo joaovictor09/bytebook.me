@@ -34,7 +34,7 @@ export class DeclineConnectionRequestUseCase {
       throw new InvalidConnectionRequestError()
     }
 
-    if (connection.addresseeId !== user.id) {
+    if (connection.recipientId !== user.id) {
       throw new InvalidConnectionRequestError()
     }
 

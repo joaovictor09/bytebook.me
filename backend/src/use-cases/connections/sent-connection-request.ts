@@ -5,8 +5,8 @@ import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
 import { InvalidConnectionRequestError } from '../_errors/invalid-connection-request'
 
 interface SentConnectionRequestUseCaseRequest {
-  requesterId: string
-  addresseeId: string
+  senderId: string
+  recipientId: string
 }
 
 interface SentConnectionRequestUseCaseResponse {
@@ -20,31 +20,28 @@ export class SentConnectionRequestUseCase {
   ) {}
 
   async execute({
-    addresseeId,
-    requesterId,
+    recipientId,
+    senderId,
   }: SentConnectionRequestUseCaseRequest): Promise<SentConnectionRequestUseCaseResponse> {
-    const addressee = await this.usersRepository.findById(addresseeId)
-    const requester = await this.usersRepository.findById(requesterId)
+    const recipient = await this.usersRepository.findById(recipientId)
+    const sender = await this.usersRepository.findById(senderId)
 
-    if (!addressee || !requester) {
+    if (!recipient || !sender) {
       throw new ResourceNotFoundError()
     }
 
-    if (addressee.id === requester.id) {
+    if (recipient.id === sender.id) {
       throw new InvalidConnectionRequestError()
     }
 
     const existingConnection =
-      await this.connectionsRepository.findBetweenUsers(
-        requesterId,
-        addresseeId,
-      )
+      await this.connectionsRepository.findBetweenUsers(senderId, recipientId)
 
     if (existingConnection) {
       if (existingConnection.status === 'PENDING') {
         const isReversed =
-          existingConnection.requesterId === addresseeId &&
-          existingConnection.addresseeId === requesterId
+          existingConnection.senderId === recipientId &&
+          existingConnection.recipientId === senderId
 
         if (isReversed) {
           const connection = await this.connectionsRepository.accept(
@@ -61,8 +58,8 @@ export class SentConnectionRequestUseCase {
     }
 
     const connection = await this.connectionsRepository.create({
-      addresseeId,
-      requesterId,
+      recipientId,
+      senderId,
     })
 
     return { connection }

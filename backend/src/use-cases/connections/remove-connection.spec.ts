@@ -16,27 +16,27 @@ describe('Remove Connection Request Use Case', () => {
     sut = new RemoveConnectionUseCase(usersRepository, connectionsRepository)
   })
 
-  it('should remove an accepted connection when requested by requester', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+  it('should remove an accepted connection when requested by sender', async () => {
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
       status: 'ACCEPTED',
     })
 
     await sut.execute({
-      userId: requester.id,
+      userId: sender.id,
       connectionId: connection.id,
     })
 
@@ -44,27 +44,27 @@ describe('Remove Connection Request Use Case', () => {
     expect(found).toBeNull()
   })
 
-  it('should remove an accepted connection when requested by addressee', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+  it('should remove an accepted connection when requested by recipient', async () => {
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
       status: 'ACCEPTED',
     })
 
     await sut.execute({
-      userId: addressee.id,
+      userId: recipient.id,
       connectionId: connection.id,
     })
 
@@ -73,21 +73,21 @@ describe('Remove Connection Request Use Case', () => {
   })
 
   it('should not remove if user does not exist', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
       status: 'ACCEPTED',
     })
 
@@ -115,42 +115,42 @@ describe('Remove Connection Request Use Case', () => {
   })
 
   it('should not remove if connection is not accepted', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
       status: 'PENDING',
     })
 
     await expect(() =>
       sut.execute({
-        userId: requester.id,
+        userId: sender.id,
         connectionId: connection.id,
       }),
     ).rejects.toBeInstanceOf(InvalidConnectionRequestError)
   })
 
-  it('should not remove if user is not requester or addressee', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+  it('should not remove if user is not sender or recipient', async () => {
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
@@ -161,8 +161,8 @@ describe('Remove Connection Request Use Case', () => {
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
       status: 'ACCEPTED',
     })
 

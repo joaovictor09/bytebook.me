@@ -29,7 +29,7 @@ export class CancelConnectionRequestUseCase {
       throw new InvalidConnectionRequestError()
     }
 
-    if (connection.requesterId !== user.id) {
+    if (connection.senderId !== user.id) {
       throw new InvalidConnectionRequestError()
     }
 

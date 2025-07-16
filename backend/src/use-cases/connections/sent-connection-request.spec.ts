@@ -20,31 +20,31 @@ describe('Sent Connection Request Use Case', () => {
   })
 
   it('should send a connection request from one user to another', async () => {
-    const requester = await usersRepository.create({
+    const sender = await usersRepository.create({
       name: 'Alice',
       email: 'alice@example.com',
       passwordHash: '123456',
     })
 
-    const addressee = await usersRepository.create({
+    const recipient = await usersRepository.create({
       name: 'Bob',
       email: 'bob@example.com',
       passwordHash: '123456',
     })
 
     const { connection } = await sut.execute({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
     })
 
     expect(connection.id).toEqual(expect.any(String))
-    expect(connection.requesterId).toBe(requester.id)
-    expect(connection.addresseeId).toBe(addressee.id)
+    expect(connection.senderId).toBe(sender.id)
+    expect(connection.recipientId).toBe(recipient.id)
     expect(connection.status).toBe('PENDING')
   })
 
   it('should not allow sending a connection to a non-existent user', async () => {
-    const requester = await usersRepository.create({
+    const sender = await usersRepository.create({
       name: 'Alice',
       email: 'alice@example.com',
       passwordHash: '123456',
@@ -52,8 +52,8 @@ describe('Sent Connection Request Use Case', () => {
 
     await expect(() =>
       sut.execute({
-        requesterId: requester.id,
-        addresseeId: 'non-existent-id',
+        senderId: sender.id,
+        recipientId: 'non-existent-id',
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
@@ -67,8 +67,8 @@ describe('Sent Connection Request Use Case', () => {
 
     await expect(() =>
       sut.execute({
-        requesterId: user.id,
-        addresseeId: user.id,
+        senderId: user.id,
+        recipientId: user.id,
       }),
     ).rejects.toBeInstanceOf(InvalidConnectionRequestError)
   })
@@ -87,14 +87,14 @@ describe('Sent Connection Request Use Case', () => {
     })
 
     await sut.execute({
-      requesterId: userA.id,
-      addresseeId: userB.id,
+      senderId: userA.id,
+      recipientId: userB.id,
     })
 
     await expect(() =>
       sut.execute({
-        requesterId: userA.id,
-        addresseeId: userB.id,
+        senderId: userA.id,
+        recipientId: userB.id,
       }),
     ).rejects.toBeInstanceOf(InvalidConnectionRequestError)
   })
@@ -114,18 +114,18 @@ describe('Sent Connection Request Use Case', () => {
 
     // Bob envia primeiro
     await sut.execute({
-      requesterId: userB.id,
-      addresseeId: userA.id,
+      senderId: userB.id,
+      recipientId: userA.id,
     })
 
     // Alice envia depois — deve aceitar automaticamente
     const { connection } = await sut.execute({
-      requesterId: userA.id,
-      addresseeId: userB.id,
+      senderId: userA.id,
+      recipientId: userB.id,
     })
 
     expect(connection.status).toBe('ACCEPTED')
-    expect(connection.requesterId).toBe(userB.id) // permanece o original
-    expect(connection.addresseeId).toBe(userA.id)
+    expect(connection.senderId).toBe(userB.id) // permanece o original
+    expect(connection.recipientId).toBe(userA.id)
   })
 })

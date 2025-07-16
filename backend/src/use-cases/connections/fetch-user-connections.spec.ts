@@ -15,14 +15,14 @@ describe('InMemoryConnectionsRepository - findByUser', () => {
 
   it('should return all connections involving the user', async () => {
     await connectionsRepository.create({
-      requesterId: userA,
-      addresseeId: userB,
+      senderId: userA,
+      recipientId: userB,
       status: 'ACCEPTED',
     })
 
     await connectionsRepository.create({
-      requesterId: userC,
-      addresseeId: userA,
+      senderId: userC,
+      recipientId: userA,
       status: 'PENDING',
     })
 
@@ -33,14 +33,14 @@ describe('InMemoryConnectionsRepository - findByUser', () => {
 
   it('should return only SENT connections when filtered by direction', async () => {
     await connectionsRepository.create({
-      requesterId: userA,
-      addresseeId: userB,
+      senderId: userA,
+      recipientId: userB,
       status: 'PENDING',
     })
 
     await connectionsRepository.create({
-      requesterId: userC,
-      addresseeId: userA,
+      senderId: userC,
+      recipientId: userA,
       status: 'PENDING',
     })
 
@@ -50,19 +50,19 @@ describe('InMemoryConnectionsRepository - findByUser', () => {
     })
 
     expect(sent).toHaveLength(1)
-    expect(sent[0].requesterId).toBe(userA)
+    expect(sent[0].senderId).toBe(userA)
   })
 
   it('should return only RECEIVED connections when filtered by direction', async () => {
     await connectionsRepository.create({
-      requesterId: userA,
-      addresseeId: userB,
+      senderId: userA,
+      recipientId: userB,
       status: 'PENDING',
     })
 
     await connectionsRepository.create({
-      requesterId: userC,
-      addresseeId: userA,
+      senderId: userC,
+      recipientId: userA,
       status: 'PENDING',
     })
 
@@ -72,19 +72,19 @@ describe('InMemoryConnectionsRepository - findByUser', () => {
     })
 
     expect(received).toHaveLength(1)
-    expect(received[0].addresseeId).toBe(userA)
+    expect(received[0].recipientId).toBe(userA)
   })
 
   it('should filter by status', async () => {
     await connectionsRepository.create({
-      requesterId: userA,
-      addresseeId: userB,
+      senderId: userA,
+      recipientId: userB,
       status: 'PENDING',
     })
 
     await connectionsRepository.create({
-      requesterId: userB,
-      addresseeId: userA,
+      senderId: userB,
+      recipientId: userA,
       status: 'ACCEPTED',
     })
 
@@ -99,14 +99,14 @@ describe('InMemoryConnectionsRepository - findByUser', () => {
 
   it('should filter by status and direction together', async () => {
     await connectionsRepository.create({
-      requesterId: userA,
-      addresseeId: userB,
+      senderId: userA,
+      recipientId: userB,
       status: 'PENDING',
     })
 
     await connectionsRepository.create({
-      requesterId: userB,
-      addresseeId: userA,
+      senderId: userB,
+      recipientId: userA,
       status: 'PENDING',
     })
 
@@ -117,7 +117,7 @@ describe('InMemoryConnectionsRepository - findByUser', () => {
     })
 
     expect(receivedPending).toHaveLength(1)
-    expect(receivedPending[0].requesterId).toBe(userB)
+    expect(receivedPending[0].senderId).toBe(userB)
     expect(receivedPending[0].status).toBe('PENDING')
   })
 })

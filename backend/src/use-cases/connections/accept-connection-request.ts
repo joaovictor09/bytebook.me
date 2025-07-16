@@ -23,8 +23,8 @@ export class AcceptConnectionRequestUseCase {
     userId,
     connectionId,
   }: AcceptConnectionRequestUseCaseRequest): Promise<AcceptConnectionRequestUseCaseResponse> {
-    const addressee = await this.usersRepository.findById(userId)
-    if (!addressee) {
+    const recipient = await this.usersRepository.findById(userId)
+    if (!recipient) {
       throw new ResourceNotFoundError()
     }
 
@@ -34,7 +34,7 @@ export class AcceptConnectionRequestUseCase {
     }
 
     const isPending = connection.status === 'PENDING'
-    const isAddressee = connection.addresseeId === addressee.id
+    const isAddressee = connection.recipientId === recipient.id
 
     if (!isPending || !isAddressee) {
       throw new InvalidConnectionRequestError()

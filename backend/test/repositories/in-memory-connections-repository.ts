@@ -10,8 +10,8 @@ export class InMemoryConnectionsRepository implements ConnectionsRepository {
   ): Promise<Connection> {
     const connection: Connection = {
       id: randomUUID(),
-      requesterId: data.requesterId,
-      addresseeId: data.addresseeId,
+      senderId: data.senderId,
+      recipientId: data.recipientId,
       status: data.status ?? 'PENDING',
       createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
       updatedAt: data.updatedAt ? new Date(data.updatedAt) : new Date(),
@@ -28,8 +28,8 @@ export class InMemoryConnectionsRepository implements ConnectionsRepository {
     return (
       this.items.find(
         (item) =>
-          (item.requesterId === userAId && item.addresseeId === userBId) ||
-          (item.requesterId === userBId && item.addresseeId === userAId),
+          (item.senderId === userAId && item.recipientId === userBId) ||
+          (item.senderId === userBId && item.recipientId === userAId),
       ) ?? null
     )
   }
@@ -75,15 +75,15 @@ export class InMemoryConnectionsRepository implements ConnectionsRepository {
   }): Promise<Connection[]> {
     return this.items.filter((connection) => {
       const isParticipant =
-        connection.requesterId === params.userId ||
-        connection.addresseeId === params.userId
+        connection.senderId === params.userId ||
+        connection.recipientId === params.userId
 
       const matchesDirection =
         !params.direction ||
         (params.direction === 'SENT' &&
-          connection.requesterId === params.userId) ||
+          connection.senderId === params.userId) ||
         (params.direction === 'RECEIVED' &&
-          connection.addresseeId === params.userId)
+          connection.recipientId === params.userId)
 
       const matchesStatus =
         !params.status || connection.status === params.status

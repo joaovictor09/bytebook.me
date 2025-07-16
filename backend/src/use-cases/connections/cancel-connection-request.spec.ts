@@ -20,25 +20,25 @@ describe('Cancel Connection Request Use Case', () => {
   })
 
   it('should cancel a pending connection request', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
     })
 
     await sut.execute({
-      userId: requester.id,
+      userId: sender.id,
       connectionId: connection.id,
     })
 
@@ -47,21 +47,21 @@ describe('Cancel Connection Request Use Case', () => {
   })
 
   it('should not cancel if user does not exist', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
     })
 
     await expect(() =>
@@ -73,68 +73,68 @@ describe('Cancel Connection Request Use Case', () => {
   })
 
   it('should not cancel if connection does not exist', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
     await expect(() =>
       sut.execute({
-        userId: requester.id,
+        userId: sender.id,
         connectionId: 'invalid-id',
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
 
   it('should not cancel if connection is not pending', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
       status: 'ACCEPTED',
     })
 
     await expect(() =>
       sut.execute({
-        userId: requester.id,
+        userId: sender.id,
         connectionId: connection.id,
       }),
     ).rejects.toBeInstanceOf(InvalidConnectionRequestError)
   })
 
-  it('should not cancel if user is not the requester', async () => {
-    const requester = await usersRepository.create({
-      name: 'Requester',
-      email: 'requester@example.com',
+  it('should not cancel if user is not the sender', async () => {
+    const sender = await usersRepository.create({
+      name: 'sender',
+      email: 'sender@example.com',
       passwordHash: 'hash',
     })
 
-    const addressee = await usersRepository.create({
-      name: 'Addressee',
-      email: 'addressee@example.com',
+    const recipient = await usersRepository.create({
+      name: 'recipient',
+      email: 'recipient@example.com',
       passwordHash: 'hash',
     })
 
     const connection = await connectionsRepository.create({
-      requesterId: requester.id,
-      addresseeId: addressee.id,
+      senderId: sender.id,
+      recipientId: recipient.id,
     })
 
     await expect(() =>
       sut.execute({
-        userId: addressee.id, // tentando cancelar quem recebeu
+        userId: recipient.id, // tentando cancelar quem recebeu
         connectionId: connection.id,
       }),
     ).rejects.toBeInstanceOf(InvalidConnectionRequestError)
