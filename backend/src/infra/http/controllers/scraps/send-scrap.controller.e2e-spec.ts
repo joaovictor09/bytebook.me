@@ -53,14 +53,14 @@ describe('Send Scrap (E2E)', () => {
       .post(`/scraps/send/${recipientId}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        message: 'Olá, tudo bem?',
+        message: 'Migaaa sua loca',
       })
 
     expect(response.statusCode).toBe(201)
     expect(response.body).toEqual({
       scrap: expect.objectContaining({
         id: expect.any(String),
-        message: 'Olá, tudo bem?',
+        message: 'Migaaa sua loca',
         senderId,
         recipientId,
       }),
@@ -71,6 +71,6 @@ describe('Send Scrap (E2E)', () => {
     })
 
     expect(scrapInDb).toBeTruthy()
-    expect(scrapInDb?.message).toBe('Olá, tudo bem?')
+    expect(scrapInDb?.message).toBe('Migaaa sua loca')
   })
 })
