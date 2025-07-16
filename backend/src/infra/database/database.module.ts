@@ -6,6 +6,8 @@ import { ConnectionsRepository } from '@/repositories/connections-repository'
 import { PrismaConnectionsRepository } from './prisma/repositories/prisma-connections-repository'
 import { ScrapsRepository } from '@/repositories/scraps-repository'
 import { PrismaScrapsRepository } from './prisma/repositories/prisma-scraps-repository'
+import { ScrapCommentsRepository } from '@/repositories/scrap-comments-repository'
+import { PrismaScrapCommentsRepository } from './prisma/repositories/prisma-scrap-comments-repository'
 
 @Module({
   providers: [
@@ -13,12 +15,17 @@ import { PrismaScrapsRepository } from './prisma/repositories/prisma-scraps-repo
     { provide: UsersRepository, useClass: PrismaUsersRepository },
     { provide: ConnectionsRepository, useClass: PrismaConnectionsRepository },
     { provide: ScrapsRepository, useClass: PrismaScrapsRepository },
+    {
+      provide: ScrapCommentsRepository,
+      useClass: PrismaScrapCommentsRepository,
+    },
   ],
   exports: [
     PrismaService,
     UsersRepository,
     ConnectionsRepository,
     ScrapsRepository,
+    ScrapCommentsRepository,
   ],
 })
 export class DatabaseModule {}

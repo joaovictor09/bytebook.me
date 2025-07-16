@@ -1,8 +1,9 @@
-import type { UsersRepository } from '@/repositories/users-repository'
-import type { ScrapComment } from '@prisma/client'
+import { UsersRepository } from '@/repositories/users-repository'
+import { ScrapComment } from '@prisma/client'
 import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
-import type { ScrapsRepository } from '@/repositories/scraps-repository'
-import type { ScrapCommentsRepository } from '@/repositories/scrap-comments-repository'
+import { ScrapsRepository } from '@/repositories/scraps-repository'
+import { ScrapCommentsRepository } from '@/repositories/scrap-comments-repository'
+import { Injectable } from '@nestjs/common'
 
 interface CommentScrapUseCaseRequest {
   senderId: string
@@ -14,6 +15,7 @@ interface CommentScrapUseCaseResponse {
   comment: ScrapComment
 }
 
+@Injectable()
 export class CommentScrapUseCase {
   constructor(
     private usersRepository: UsersRepository,
