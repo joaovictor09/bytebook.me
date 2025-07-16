@@ -19,12 +19,37 @@ enum Role {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  name          String
-  email         String   @unique
-  password_hash String
-  role          Role     @default(MEMBER)
-  created_at    DateTime @default(now())
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         Role     @default(MEMBER)
+  created_at   DateTime @default(now())
+
+  // Relacionamentos de conexões
+  sentConnections     Connection[] @relation("ConnectionRequester")
+  receivedConnections Connection[] @relation("ConnectionAddressee")
 
   @@map("users")
+}
+
+enum ConnectionStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model Connection {
+  id          String @id @default(uuid())
+  requester   User   @relation(fields: [requesterId], references: [id], name: "ConnectionRequester", onDelete: Cascade)
+  addressee   User   @relation(fields: [addresseeId], references: [id], name: "ConnectionAddressee", onDelete: Cascade)
+  requesterId String @map("requester_id")
+  addresseeId String @map("addressee_id")
+
+  status    ConnectionStatus @default(PENDING)
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+
+  @@unique([requesterId, addresseeId])
+  @@map("connections")
 }
