@@ -1,19 +1,19 @@
 import { expect, describe, it, beforeEach } from 'vitest'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { InMemoryConnectionsRepository } from 'test/repositories/in-memory-connections-repository'
-import { SentConnectionRequestUseCase } from './sent-connection-request'
+import { SendConnectionRequestUseCase } from './send-connection-request'
 import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
 import { InvalidConnectionRequestError } from '../_errors/invalid-connection-request'
 
 let usersRepository: InMemoryUsersRepository
 let connectionsRepository: InMemoryConnectionsRepository
-let sut: SentConnectionRequestUseCase
+let sut: SendConnectionRequestUseCase
 
-describe('Sent Connection Request Use Case', () => {
+describe('Send Connection Request Use Case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
     connectionsRepository = new InMemoryConnectionsRepository()
-    sut = new SentConnectionRequestUseCase(
+    sut = new SendConnectionRequestUseCase(
       usersRepository,
       connectionsRepository,
     )

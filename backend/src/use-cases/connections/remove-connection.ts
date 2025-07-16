@@ -1,13 +1,15 @@
-import type { UsersRepository } from '@/repositories/users-repository'
-import type { ConnectionsRepository } from '@/repositories/connections-repository'
+import { UsersRepository } from '@/repositories/users-repository'
+import { ConnectionsRepository } from '@/repositories/connections-repository'
 import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
 import { InvalidConnectionRequestError } from '../_errors/invalid-connection-request'
+import { Injectable } from '@nestjs/common'
 
 interface RemoveConnectionUseCaseRequest {
   userId: string
   connectionId: string
 }
 
+@Injectable()
 export class RemoveConnectionUseCase {
   constructor(
     private usersRepository: UsersRepository,
@@ -29,10 +31,7 @@ export class RemoveConnectionUseCase {
       throw new InvalidConnectionRequestError()
     }
 
-    if (
-      connection.senderId !== user.id &&
-      connection.recipientId !== user.id
-    ) {
+    if (connection.senderId !== user.id && connection.recipientId !== user.id) {
       throw new InvalidConnectionRequestError()
     }
 

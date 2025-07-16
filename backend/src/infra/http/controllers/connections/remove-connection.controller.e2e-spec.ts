@@ -4,11 +4,11 @@ import { INestApplication } from '@nestjs/common'
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
-import { hash } from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt'
+import { hash } from 'bcryptjs'
 import { randomUUID } from 'crypto'
 
-describe('Send Connection Request (E2E)', () => {
+describe('Remove Connection (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
@@ -25,42 +25,48 @@ describe('Send Connection Request (E2E)', () => {
     await app.init()
   })
 
-  test('[POST] /connections/request/send/:userId', async () => {
-    const senderId = randomUUID()
-    const recipientId = randomUUID()
+  test('[PATCH] /connections/remove/:connectionId', async () => {
+    const userAId = randomUUID()
+    const userBId = randomUUID()
 
     await prisma.user.create({
       data: {
-        id: senderId,
-        name: 'Sender',
-        email: 'sender@example.com',
-        passwordHash: await hash('123456', 8),
+        id: userAId,
+        name: 'User A',
+        email: 'usera@example.com',
+        passwordHash: await hash('passwordA', 8),
       },
     })
 
     await prisma.user.create({
       data: {
-        id: recipientId,
-        name: 'Recipient',
-        email: 'recipient@example.com',
-        passwordHash: await hash('abcdef', 8),
+        id: userBId,
+        name: 'User B',
+        email: 'userb@example.com',
+        passwordHash: await hash('passwordB', 8),
       },
     })
 
-    const accessToken = jwt.sign({ sub: senderId })
+    const connection = await prisma.connection.create({
+      data: {
+        senderId: userAId,
+        recipientId: userBId,
+        status: 'ACCEPTED',
+      },
+    })
+
+    const accessToken = jwt.sign({ sub: userAId })
 
     const response = await request(app.getHttpServer())
-      .post(`/connections/request/send/${recipientId}`)
+      .patch(`/connections/remove/${connection.id}`)
       .set('Authorization', `Bearer ${accessToken}`)
 
     expect(response.statusCode).toBe(201)
-    expect(response.body).toEqual({
-      connection: expect.objectContaining({
-        id: expect.any(String),
-        senderId,
-        recipientId,
-        status: 'PENDING',
-      }),
+
+    const deletedConnection = await prisma.connection.findUnique({
+      where: { id: connection.id },
     })
+
+    expect(deletedConnection).toBeNull()
   })
 })

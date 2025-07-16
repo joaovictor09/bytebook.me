@@ -5,17 +5,17 @@ import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
 import { InvalidConnectionRequestError } from '../_errors/invalid-connection-request'
 import { Injectable } from '@nestjs/common'
 
-interface SentConnectionRequestUseCaseRequest {
+interface SendConnectionRequestUseCaseRequest {
   senderId: string
   recipientId: string
 }
 
-interface SentConnectionRequestUseCaseResponse {
+interface SendConnectionRequestUseCaseResponse {
   connection: Connection
 }
 
 @Injectable()
-export class SentConnectionRequestUseCase {
+export class SendConnectionRequestUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private connectionsRepository: ConnectionsRepository,
@@ -24,7 +24,7 @@ export class SentConnectionRequestUseCase {
   async execute({
     recipientId,
     senderId,
-  }: SentConnectionRequestUseCaseRequest): Promise<SentConnectionRequestUseCaseResponse> {
+  }: SendConnectionRequestUseCaseRequest): Promise<SendConnectionRequestUseCaseResponse> {
     const recipient = await this.usersRepository.findById(recipientId)
     const sender = await this.usersRepository.findById(senderId)
 

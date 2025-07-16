@@ -1,11 +1,11 @@
 import { Controller, HttpCode, Param, Post } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
-import { SentConnectionRequestUseCase } from '@/use-cases/connections/sent-connection-request'
+import { SendConnectionRequestUseCase } from '@/use-cases/connections/send-connection-request'
 
-@Controller('/connections/request/:userId')
+@Controller('/connections/request/send/:userId')
 export class SendConnectionRequestController {
-  constructor(private sendConnection: SentConnectionRequestUseCase) {}
+  constructor(private sendConnection: SendConnectionRequestUseCase) {}
 
   @Post()
   @HttpCode(201)

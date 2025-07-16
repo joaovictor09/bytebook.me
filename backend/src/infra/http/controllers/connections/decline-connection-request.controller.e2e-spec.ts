@@ -4,11 +4,11 @@ import { INestApplication } from '@nestjs/common'
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
-import { hash } from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt'
+import { hash } from 'bcryptjs'
 import { randomUUID } from 'crypto'
 
-describe('Send Connection Request (E2E)', () => {
+describe('Decline Connection Request (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
@@ -25,14 +25,15 @@ describe('Send Connection Request (E2E)', () => {
     await app.init()
   })
 
-  test('[POST] /connections/request/send/:userId', async () => {
+  test('[PATCH] /connections/request/decline/:connectionId', async () => {
     const senderId = randomUUID()
     const recipientId = randomUUID()
 
+    // Cria os usuários
     await prisma.user.create({
       data: {
         id: senderId,
-        name: 'Sender',
+        name: 'Sender User',
         email: 'sender@example.com',
         passwordHash: await hash('123456', 8),
       },
@@ -41,26 +42,34 @@ describe('Send Connection Request (E2E)', () => {
     await prisma.user.create({
       data: {
         id: recipientId,
-        name: 'Recipient',
+        name: 'Recipient User',
         email: 'recipient@example.com',
         passwordHash: await hash('abcdef', 8),
       },
     })
 
-    const accessToken = jwt.sign({ sub: senderId })
-
-    const response = await request(app.getHttpServer())
-      .post(`/connections/request/send/${recipientId}`)
-      .set('Authorization', `Bearer ${accessToken}`)
-
-    expect(response.statusCode).toBe(201)
-    expect(response.body).toEqual({
-      connection: expect.objectContaining({
-        id: expect.any(String),
+    const connection = await prisma.connection.create({
+      data: {
         senderId,
         recipientId,
         status: 'PENDING',
-      }),
+      },
     })
+
+    const accessToken = jwt.sign({ sub: recipientId })
+
+    const response = await request(app.getHttpServer())
+      .patch(`/connections/request/decline/${connection.id}`)
+      .set('Authorization', `Bearer ${accessToken}`)
+
+    expect(response.statusCode).toBe(201)
+
+    // Verifica se a conexão foi atualizada para DECLINED
+    const declinedConnection = await prisma.connection.findUnique({
+      where: { id: connection.id },
+    })
+
+    expect(declinedConnection).toBeTruthy()
+    expect(declinedConnection?.status).toBe('DECLINED')
   })
 })
