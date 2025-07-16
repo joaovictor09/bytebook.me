@@ -1,8 +1,9 @@
-import type { UsersRepository } from '@/repositories/users-repository'
-import type { Scrap } from '@prisma/client'
+import { UsersRepository } from '@/repositories/users-repository'
+import { Scrap } from '@prisma/client'
 import { InvalidScrapOperationError } from '../_errors/invalid-scrap-operation-error'
 import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
-import type { ScrapsRepository } from '@/repositories/scraps-repository'
+import { ScrapsRepository } from '@/repositories/scraps-repository'
+import { Injectable } from '@nestjs/common'
 
 interface SendScrapUseCaseRequest {
   senderId: string
@@ -14,6 +15,7 @@ interface SendScrapUseCaseResponse {
   scrap: Scrap
 }
 
+@Injectable()
 export class SendScrapUseCase {
   constructor(
     private usersRepository: UsersRepository,
