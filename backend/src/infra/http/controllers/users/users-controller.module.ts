@@ -5,10 +5,16 @@ import { RegisterUserUseCase } from '@/use-cases/users/register-user'
 import { Module } from '@nestjs/common'
 import { AuthenticateController } from './authenticate.controller'
 import { CreateAccountController } from './create-account.controller'
+import { GetMeController } from './get-me.controller'
+import { FindUserByIdUseCase } from '@/use-cases/users/find-user-by-id'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
-  controllers: [CreateAccountController, AuthenticateController],
-  providers: [RegisterUserUseCase, AuthenticateUseCase],
+  controllers: [
+    CreateAccountController,
+    AuthenticateController,
+    GetMeController,
+  ],
+  providers: [RegisterUserUseCase, AuthenticateUseCase, FindUserByIdUseCase],
 })
 export class UsersControllerModule {}
