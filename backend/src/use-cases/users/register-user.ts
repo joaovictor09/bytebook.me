@@ -1,7 +1,8 @@
-import type { UsersRepository } from '@/repositories/users-repository'
 import { UserAlreadyExistsError } from '../_errors/user-already-exists-error'
-import type { User } from '@prisma/client'
-import type { HashGenerator } from '@/cryptography/hash-generator'
+import { User } from '@prisma/client'
+import { HashGenerator } from '@/cryptography/hash-generator'
+import { Injectable } from '@nestjs/common'
+import { UsersRepository } from '@/repositories/users-repository'
 
 interface RegisterUserUseCaseRequest {
   name: string
@@ -13,6 +14,7 @@ interface RegisterUserUseCaseResponse {
   user: User
 }
 
+@Injectable()
 export class RegisterUserUseCase {
   constructor(
     private usersRepository: UsersRepository,
