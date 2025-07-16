@@ -9,7 +9,7 @@ let usersRepository: InMemoryUsersRepository
 let connectionsRepository: InMemoryConnectionsRepository
 let sut: DeclineConnectionRequestUseCase
 
-describe('DeclineConnectionRequestUseCase', () => {
+describe('Decline Connection Request Use Case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
     connectionsRepository = new InMemoryConnectionsRepository()

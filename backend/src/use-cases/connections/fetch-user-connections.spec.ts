@@ -1,123 +1,137 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { randomUUID } from 'node:crypto'
+import { FetchUserConnections } from './fetch-user-connections'
 import { InMemoryConnectionsRepository } from 'test/repositories/in-memory-connections-repository'
 
-describe('InMemoryConnectionsRepository - findByUser', () => {
-  let connectionsRepository: InMemoryConnectionsRepository
+let connectionsRepository: InMemoryConnectionsRepository
+let sut: FetchUserConnections
 
-  const userA = randomUUID()
-  const userB = randomUUID()
-  const userC = randomUUID()
-
+describe('Fetch User Connections Use Case', () => {
   beforeEach(() => {
     connectionsRepository = new InMemoryConnectionsRepository()
+    sut = new FetchUserConnections(connectionsRepository)
   })
 
-  it('should return all connections involving the user', async () => {
-    await connectionsRepository.create({
-      senderId: userA,
-      recipientId: userB,
+  it('should fetch all connections of a user without filters', async () => {
+    // Inserir conexões para teste
+    connectionsRepository.items.push(
+      {
+        id: '1',
+        senderId: 'user1',
+        recipientId: 'user2',
+        status: 'PENDING',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: '2',
+        senderId: 'user3',
+        recipientId: 'user1',
+        status: 'ACCEPTED',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: '3',
+        senderId: 'user1',
+        recipientId: 'user4',
+        status: 'DECLINED',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    )
+
+    const { connections } = await sut.execute({ userId: 'user1' })
+
+    expect(connections.length).toBe(3)
+    expect(connections.map((c) => c.id)).toEqual(
+      expect.arrayContaining(['1', '2', '3']),
+    )
+  })
+
+  it('should fetch connections filtered by status', async () => {
+    connectionsRepository.items.push(
+      {
+        id: '1',
+        senderId: 'user1',
+        recipientId: 'user2',
+        status: 'PENDING',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: '2',
+        senderId: 'user3',
+        recipientId: 'user1',
+        status: 'ACCEPTED',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    )
+
+    const { connections } = await sut.execute({
+      userId: 'user1',
       status: 'ACCEPTED',
     })
 
-    await connectionsRepository.create({
-      senderId: userC,
-      recipientId: userA,
-      status: 'PENDING',
-    })
-
-    const result = await connectionsRepository.fetchByUser({ userId: userA })
-
-    expect(result).toHaveLength(2)
+    expect(connections.length).toBe(1)
+    expect(connections[0].status).toBe('ACCEPTED')
   })
 
-  it('should return only SENT connections when filtered by direction', async () => {
-    await connectionsRepository.create({
-      senderId: userA,
-      recipientId: userB,
-      status: 'PENDING',
-    })
+  it('should fetch connections filtered by direction SENT', async () => {
+    connectionsRepository.items.push(
+      {
+        id: '1',
+        senderId: 'user1',
+        recipientId: 'user2',
+        status: 'PENDING',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: '2',
+        senderId: 'user3',
+        recipientId: 'user1',
+        status: 'ACCEPTED',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    )
 
-    await connectionsRepository.create({
-      senderId: userC,
-      recipientId: userA,
-      status: 'PENDING',
-    })
-
-    const sent = await connectionsRepository.fetchByUser({
-      userId: userA,
+    const { connections } = await sut.execute({
+      userId: 'user1',
       direction: 'SENT',
     })
 
-    expect(sent).toHaveLength(1)
-    expect(sent[0].senderId).toBe(userA)
+    expect(connections.length).toBe(1)
+    expect(connections[0].senderId).toBe('user1')
   })
 
-  it('should return only RECEIVED connections when filtered by direction', async () => {
-    await connectionsRepository.create({
-      senderId: userA,
-      recipientId: userB,
-      status: 'PENDING',
-    })
+  it('should fetch connections filtered by direction RECEIVED', async () => {
+    connectionsRepository.items.push(
+      {
+        id: '1',
+        senderId: 'user1',
+        recipientId: 'user2',
+        status: 'PENDING',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: '2',
+        senderId: 'user3',
+        recipientId: 'user1',
+        status: 'ACCEPTED',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    )
 
-    await connectionsRepository.create({
-      senderId: userC,
-      recipientId: userA,
-      status: 'PENDING',
-    })
-
-    const received = await connectionsRepository.fetchByUser({
-      userId: userA,
+    const { connections } = await sut.execute({
+      userId: 'user1',
       direction: 'RECEIVED',
     })
 
-    expect(received).toHaveLength(1)
-    expect(received[0].recipientId).toBe(userA)
-  })
-
-  it('should filter by status', async () => {
-    await connectionsRepository.create({
-      senderId: userA,
-      recipientId: userB,
-      status: 'PENDING',
-    })
-
-    await connectionsRepository.create({
-      senderId: userB,
-      recipientId: userA,
-      status: 'ACCEPTED',
-    })
-
-    const accepted = await connectionsRepository.fetchByUser({
-      userId: userA,
-      status: 'ACCEPTED',
-    })
-
-    expect(accepted).toHaveLength(1)
-    expect(accepted[0].status).toBe('ACCEPTED')
-  })
-
-  it('should filter by status and direction together', async () => {
-    await connectionsRepository.create({
-      senderId: userA,
-      recipientId: userB,
-      status: 'PENDING',
-    })
-
-    await connectionsRepository.create({
-      senderId: userB,
-      recipientId: userA,
-      status: 'PENDING',
-    })
-
-    const receivedPending = await connectionsRepository.fetchByUser({
-      userId: userA,
-      direction: 'RECEIVED',
-      status: 'PENDING',
-    })
-
-    expect(receivedPending).toHaveLength(1)
-    expect(receivedPending[0].senderId).toBe(userB)
-    expect(receivedPending[0].status).toBe('PENDING')
+    expect(connections.length).toBe(1)
+    expect(connections[0].recipientId).toBe('user1')
   })
 })

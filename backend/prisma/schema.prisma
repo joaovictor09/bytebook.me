@@ -27,8 +27,11 @@ model User {
   created_at   DateTime @default(now())
 
   // Relacionamentos de conexões
-  sentConnections     Connection[] @relation("ConnectionSender")
-  receivedConnections Connection[] @relation("ConnectionRecipient")
+  sentConnections     Connection[]   @relation("ConnectionSender")
+  receivedConnections Connection[]   @relation("ConnectionRecipient")
+  sentScraps          Scrap[]        @relation("ScrapSender")
+  receivedScraps      Scrap[]        @relation("ScrapRecipient")
+  scrapComments       ScrapComment[]
 
   @@map("users")
 }
@@ -40,16 +43,46 @@ enum ConnectionStatus {
 }
 
 model Connection {
-  id          String @id @default(uuid())
-  sender      User   @relation(fields: [senderId], references: [id], name: "ConnectionSender", onDelete: Cascade)
-  recipient   User   @relation(fields: [recipientId], references: [id], name: "ConnectionRecipient", onDelete: Cascade)
-  senderId    String @map("sender_id")
-  recipientId String @map("recipient_id")
+  id          String           @id @default(uuid())
+  senderId    String           @map("sender_id")
+  recipientId String           @map("recipient_id")
+  status      ConnectionStatus @default(PENDING)
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
 
-  status    ConnectionStatus @default(PENDING)
-  createdAt DateTime         @default(now()) @map("created_at")
-  updatedAt DateTime         @updatedAt @map("updated_at")
+  sender    User @relation(fields: [senderId], references: [id], name: "ConnectionSender", onDelete: Cascade)
+  recipient User @relation(fields: [recipientId], references: [id], name: "ConnectionRecipient", onDelete: Cascade)
 
   @@unique([senderId, recipientId])
   @@map("connections")
+}
+
+model Scrap {
+  id        String   @id @default(uuid())
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  senderId    String @map("sender_id")
+  recipientId String @map("recipient_id")
+
+  sender        User           @relation(fields: [senderId], references: [id], name: "ScrapSender", onDelete: Cascade)
+  recipient     User           @relation(fields: [recipientId], references: [id], name: "ScrapRecipient", onDelete: Cascade)
+  scrapComments ScrapComment[]
+
+  @@map("scraps")
+}
+
+model ScrapComment {
+  id        String   @id @default(uuid())
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  senderId  String   @map("sender_id")
+  scrapId   String   @map("scrap_id")
+
+  scrap  Scrap @relation(fields: [scrapId], references: [id])
+  sender User  @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@map("scrap_comments")
 }
