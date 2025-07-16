@@ -5,6 +5,7 @@ export abstract class TopicCommentsRepository {
     data: Prisma.TopicCommentUncheckedCreateInput,
   ): Promise<TopicComment>
 
+  abstract findById(commentId: string): Promise<TopicComment | null>
   abstract findManyByTopicId(topicId: string): Promise<TopicComment[]>
   abstract delete(id: string): Promise<void>
 }

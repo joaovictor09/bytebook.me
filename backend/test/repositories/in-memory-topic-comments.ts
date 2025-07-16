@@ -20,6 +20,16 @@ export class InMemoryTopicCommentsRepository
     return comment
   }
 
+  async findById(commentId: string): Promise<TopicComment | null> {
+    const item = this.items.find((item) => item.id === commentId)
+
+    if (!item) {
+      return null
+    }
+
+    return item
+  }
+
   async findManyByTopicId(topicId: string): Promise<TopicComment[]> {
     return this.items.filter((item) => item.topicId === topicId)
   }
