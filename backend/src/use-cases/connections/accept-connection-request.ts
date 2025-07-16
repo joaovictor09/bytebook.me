@@ -1,8 +1,9 @@
-import type { UsersRepository } from '@/repositories/users-repository'
-import type { Connection } from '@prisma/client'
-import type { ConnectionsRepository } from '@/repositories/connections-repository'
+import { UsersRepository } from '@/repositories/users-repository'
+import { Connection } from '@prisma/client'
+import { ConnectionsRepository } from '@/repositories/connections-repository'
 import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
 import { InvalidConnectionRequestError } from '../_errors/invalid-connection-request'
+import { Injectable } from '@nestjs/common'
 
 interface AcceptConnectionRequestUseCaseRequest {
   userId: string
@@ -13,6 +14,7 @@ interface AcceptConnectionRequestUseCaseResponse {
   connection: Connection
 }
 
+@Injectable()
 export class AcceptConnectionRequestUseCase {
   constructor(
     private usersRepository: UsersRepository,
