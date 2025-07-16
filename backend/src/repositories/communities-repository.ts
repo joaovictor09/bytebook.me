@@ -6,6 +6,7 @@ export abstract class CommunitiesRepository {
   ): Promise<Community>
 
   abstract findById(id: string): Promise<Community | null>
+  abstract findAll(): Promise<Community[]>
   abstract findManyByName(name: string): Promise<Community[]>
   abstract findManyByUserId(userId: string): Promise<Community[]>
   abstract incrementMemberCount(id: string): Promise<void>

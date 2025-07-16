@@ -3,7 +3,7 @@ import { Community } from '@prisma/client'
 import { CommunitiesRepository } from '@/repositories/communities-repository'
 
 interface SearchCommunitiesUseCaseRequest {
-  query: string
+  query?: string
 }
 
 interface SearchCommunitiesUseCaseResponse {
@@ -17,10 +17,14 @@ export class SearchCommunitiesUseCase {
   async execute({
     query,
   }: SearchCommunitiesUseCaseRequest): Promise<SearchCommunitiesUseCaseResponse> {
-    const communities = await this.communitiesRepository.findManyByName(query)
+    let communities: Community[]
 
-    return {
-      communities,
+    if (query && query.trim().length > 0) {
+      communities = await this.communitiesRepository.findManyByName(query)
+    } else {
+      communities = await this.communitiesRepository.findAll()
     }
+
+    return { communities }
   }
 }
