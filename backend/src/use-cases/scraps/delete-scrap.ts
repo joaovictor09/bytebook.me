@@ -1,12 +1,14 @@
+import { Injectable } from '@nestjs/common'
 import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
 import { UnauthorizedError } from '../_errors/unauthorized-error'
-import type { ScrapsRepository } from '@/repositories/scraps-repository'
+import { ScrapsRepository } from '@/repositories/scraps-repository'
 
 interface DeleteScrapUseCaseRequest {
   scrapId: string
   userId: string
 }
 
+@Injectable()
 export class DeleteScrapUseCase {
   constructor(private scrapsRepository: ScrapsRepository) {}
 
