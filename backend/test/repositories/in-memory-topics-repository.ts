@@ -19,6 +19,16 @@ export class InMemoryTopicsRepository implements TopicsRepository {
     return topic
   }
 
+  async save(topic: Topic): Promise<Topic> {
+    const topicIndex = this.items.findIndex((item) => item.id === topic.id)
+
+    if (topicIndex >= 0) {
+      this.items[topicIndex] = topic
+    }
+
+    return topic
+  }
+
   async findById(id: string): Promise<Topic | null> {
     return this.items.find((item) => item.id === id) || null
   }
