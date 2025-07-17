@@ -1,4 +1,9 @@
-import type { Connection, Prisma } from '@prisma/client'
+import type { Connection, Prisma, User } from '@prisma/client'
+
+export type ConnectionWithUsers = Connection & {
+  sender: User
+  recipient: User
+}
 
 export abstract class ConnectionsRepository {
   abstract create(
@@ -9,7 +14,7 @@ export abstract class ConnectionsRepository {
     userId: string
     status?: string
     direction?: 'SENT' | 'RECEIVED'
-  }): Promise<Connection[]>
+  }): Promise<ConnectionWithUsers[]>
 
   abstract findBetweenUsers(
     userAId: string,

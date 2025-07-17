@@ -1,13 +1,16 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { FetchUserConnectionsUseCase } from './fetch-user-connections'
 import { InMemoryConnectionsRepository } from 'test/repositories/in-memory-connections-repository'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 
+let usersRepository: InMemoryUsersRepository
 let connectionsRepository: InMemoryConnectionsRepository
 let sut: FetchUserConnectionsUseCase
 
 describe('Fetch User Connections Use Case', () => {
   beforeEach(() => {
-    connectionsRepository = new InMemoryConnectionsRepository()
+    usersRepository = new InMemoryUsersRepository()
+    connectionsRepository = new InMemoryConnectionsRepository(usersRepository)
     sut = new FetchUserConnectionsUseCase(connectionsRepository)
   })
 

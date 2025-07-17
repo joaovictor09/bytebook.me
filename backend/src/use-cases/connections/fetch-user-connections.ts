@@ -1,6 +1,5 @@
 import { ConnectionsRepository } from '@/repositories/connections-repository'
 import { Injectable } from '@nestjs/common'
-import { Connection } from '@prisma/client'
 
 interface FetchUserConnectionsRequest {
   userId: string
@@ -9,7 +8,18 @@ interface FetchUserConnectionsRequest {
 }
 
 interface FetchUserConnectionsResponse {
-  connections: Connection[]
+  connections: Array<{
+    id: string
+    status: string
+    createdAt: Date
+    updatedAt: Date
+    senderId: string
+    recipientId: string
+    friend: {
+      id: string
+      name: string
+    }
+  }>
 }
 
 @Injectable()
@@ -27,6 +37,22 @@ export class FetchUserConnectionsUseCase {
       direction,
     })
 
-    return { connections }
+    return {
+      connections: connections.map((conn) => {
+        const friend = conn.senderId === userId ? conn.recipient : conn.sender
+        return {
+          id: conn.id,
+          status: conn.status,
+          createdAt: conn.createdAt,
+          updatedAt: conn.updatedAt,
+          recipientId: conn.recipientId,
+          senderId: conn.senderId,
+          friend: {
+            id: friend.id,
+            name: friend.name,
+          },
+        }
+      }),
+    }
   }
 }

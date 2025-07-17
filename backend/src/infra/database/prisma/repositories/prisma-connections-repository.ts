@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { Prisma, Connection } from '@prisma/client'
-import { ConnectionsRepository } from '@/repositories/connections-repository'
+import {
+  ConnectionsRepository,
+  ConnectionWithUsers,
+} from '@/repositories/connections-repository'
 import { PrismaService } from '../prisma.service'
 
 @Injectable()
@@ -61,7 +64,7 @@ export class PrismaConnectionsRepository implements ConnectionsRepository {
     userId: string
     status?: 'PENDING' | 'ACCEPTED' | 'DECLINED'
     direction?: 'SENT' | 'RECEIVED'
-  }): Promise<Connection[]> {
+  }): Promise<ConnectionWithUsers[]> {
     const where: Prisma.ConnectionWhereInput = {
       ...(status ? { status } : {}),
       ...(direction === 'SENT'
@@ -73,6 +76,12 @@ export class PrismaConnectionsRepository implements ConnectionsRepository {
             }),
     }
 
-    return this.prisma.connection.findMany({ where })
+    return this.prisma.connection.findMany({
+      where,
+      include: {
+        recipient: true,
+        sender: true,
+      },
+    })
   }
 }

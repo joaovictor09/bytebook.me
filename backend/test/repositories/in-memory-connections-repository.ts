@@ -1,8 +1,13 @@
-import type { ConnectionsRepository } from '@/repositories/connections-repository'
+import type {
+  ConnectionsRepository,
+  ConnectionWithUsers,
+} from '@/repositories/connections-repository'
 import type { Connection, Prisma } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
+import type { InMemoryUsersRepository } from './in-memory-users-repository'
 
 export class InMemoryConnectionsRepository implements ConnectionsRepository {
+  constructor(private usersRepository: InMemoryUsersRepository) {}
   public items: Connection[] = []
 
   async create(
@@ -72,24 +77,34 @@ export class InMemoryConnectionsRepository implements ConnectionsRepository {
     userId: string
     status?: 'PENDING' | 'ACCEPTED' | 'DECLINED'
     direction?: 'SENT' | 'RECEIVED'
-  }): Promise<Connection[]> {
-    return this.items.filter((connection) => {
-      const isParticipant =
-        connection.senderId === params.userId ||
-        connection.recipientId === params.userId
+  }): Promise<ConnectionWithUsers[]> {
+    return this.items
+      .filter((connection) => {
+        const isParticipant =
+          connection.senderId === params.userId ||
+          connection.recipientId === params.userId
 
-      const matchesDirection =
-        !params.direction ||
-        (params.direction === 'SENT' &&
-          connection.senderId === params.userId) ||
-        (params.direction === 'RECEIVED' &&
-          connection.recipientId === params.userId)
+        const matchesDirection =
+          !params.direction ||
+          (params.direction === 'SENT' &&
+            connection.senderId === params.userId) ||
+          (params.direction === 'RECEIVED' &&
+            connection.recipientId === params.userId)
 
-      const matchesStatus =
-        !params.status || connection.status === params.status
+        const matchesStatus =
+          !params.status || connection.status === params.status
 
-      return isParticipant && matchesDirection && matchesStatus
-    })
+        return isParticipant && matchesDirection && matchesStatus
+      })
+      .map((connection) => ({
+        ...connection,
+        sender: this.usersRepository.items.find(
+          (u) => u.id === connection.senderId,
+        )!,
+        recipient: this.usersRepository.items.find(
+          (u) => u.id === connection.recipientId,
+        )!,
+      }))
   }
 
   async findById(id: string): Promise<Connection | null> {
