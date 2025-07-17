@@ -1,17 +1,8 @@
 import { Outlet } from 'react-router'
-import { useAuthInit } from './hooks/use-auth-init'
-import { ThemeProvider } from './components/theme-provider'
+import { useAuthInit } from '@/hooks/use-auth-init'
 
 export function App() {
-  const { loading } = useAuthInit()
+  useAuthInit()
 
-  if (loading) {
-    return <div>Carregando sessão...</div>
-  }
-
-  return (
-    <ThemeProvider>
-      <Outlet />
-    </ThemeProvider>
-  )
+  return <Outlet />
 }

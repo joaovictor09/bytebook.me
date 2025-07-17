@@ -1,36 +1,33 @@
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { useState } from 'react'
+import { signIn } from '@/services/auth'
 import { useAuth } from '@/stores/use-auth'
-import { useNavigate } from 'react-router'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 export function SignIn() {
-  const login = useAuth((state) => state.login)
-  const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const fetchUser = useAuth((s) => s.fetchUser)
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get('email')?.toString() ?? ''
-    const password = formData.get('password')?.toString() ?? ''
-
-    const success = await login(email, password)
-
-    if (success) {
-      navigate('/')
-    } else {
-      alert('Credenciais inválidas')
-    }
+    await signIn(email, password)
+    await fetchUser()
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <Input
-        type="email"
-        name="email"
-        defaultValue="joaovictordasilva0911@gmail.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
       />
-      <Input type="password" name="password" defaultValue="34622641" />
+      <Input
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        type="password"
+        placeholder="Senha"
+      />
       <Button type="submit">Entrar</Button>
     </form>
   )

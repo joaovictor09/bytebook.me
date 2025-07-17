@@ -7,6 +7,7 @@ import { AuthenticateController } from './authenticate.controller'
 import { CreateAccountController } from './create-account.controller'
 import { GetMeController } from './get-me.controller'
 import { FindUserByIdUseCase } from '@/use-cases/users/find-user-by-id'
+import { LogoutController } from './logout.controller'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -14,6 +15,7 @@ import { FindUserByIdUseCase } from '@/use-cases/users/find-user-by-id'
     CreateAccountController,
     AuthenticateController,
     GetMeController,
+    LogoutController,
   ],
   providers: [RegisterUserUseCase, AuthenticateUseCase, FindUserByIdUseCase],
 })

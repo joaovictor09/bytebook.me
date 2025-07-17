@@ -1,45 +1,34 @@
-import { api } from '@/lib/api'
 import { create } from 'zustand'
+import { api } from '@/lib/api'
 
-type AuthState = {
-  accessToken: string | null
-  isAuthenticated: boolean
-  setAccessToken: (token: string | null) => void
-  login: (email: string, password: string) => Promise<boolean>
-  logout: () => Promise<void>
+interface User {
+  id: string
+  name: string
+  email: string
 }
 
-export const useAuth = create<AuthState>((set, get) => ({
-  accessToken: null,
-  isAuthenticated: false,
+interface AuthStore {
+  user: User | null
+  fetchUser: () => Promise<void>
+  logout: () => void
+  isLoading: boolean
+}
 
-  setAccessToken: (token) => {
-    set({
-      accessToken: token,
-      isAuthenticated: !!token,
-    })
-  },
+export const useAuth = create<AuthStore>((set) => ({
+  user: null,
+  isLoading: true,
 
-  login: async (email, password) => {
+  fetchUser: async () => {
     try {
-      const res = await api.post('/sessions', { email, password })
-      const { access_token } = res.data
-
-      if (access_token) {
-        // Se o refresh_token está vindo no corpo, ideal é mover isso pro cookie no backend.
-        // Aqui só armazenamos accessToken em memória.
-        get().setAccessToken(access_token)
-        return true
-      }
-
-      return false
+      const res = await api.get('/me')
+      set({ user: res.data, isLoading: false })
     } catch {
-      return false
+      set({ user: null, isLoading: false })
     }
   },
 
   logout: async () => {
     await api.post('/logout')
-    set({ accessToken: null, isAuthenticated: false })
+    set({ user: null })
   },
 }))

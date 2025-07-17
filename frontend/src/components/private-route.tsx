@@ -1,8 +1,16 @@
-import { useAuth } from '@/stores/use-auth'
 import { Navigate, Outlet } from 'react-router'
+import { useAuth } from '@/stores/use-auth'
 
 export function PrivateRoute() {
-  const isAuthenticated = useAuth((state) => state.isAuthenticated)
+  const { user, isLoading } = useAuth()
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/auth" />
+  if (isLoading) {
+    return <p>Carregando...</p>
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace />
+  }
+
+  return <Outlet />
 }
