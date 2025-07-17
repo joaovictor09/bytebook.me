@@ -2,7 +2,9 @@ import { Topic } from '@prisma/client'
 import { Injectable } from '@nestjs/common'
 import { CommunityMembersRepository } from '@/repositories/community-members-repository'
 import { TopicsRepository } from '@/repositories/topics-repository'
+import { CommunitiesRepository } from '@/repositories/communities-repository'
 import { NotAllowedError } from '../_errors/not-allowed-error'
+import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
 
 interface CreateTopicUseCaseRequest {
   userId: string
@@ -20,6 +22,7 @@ export class CreateTopicUseCase {
   constructor(
     private communityMembersRepository: CommunityMembersRepository,
     private topicsRepository: TopicsRepository,
+    private communitiesRepository: CommunitiesRepository,
   ) {}
 
   async execute({
@@ -28,6 +31,13 @@ export class CreateTopicUseCase {
     content,
     title,
   }: CreateTopicUseCaseRequest): Promise<CreateTopicUseCaseResponse> {
+    // 1. Verifica se a comunidade existe
+    const community = await this.communitiesRepository.findById(communityId)
+    if (!community) {
+      throw new ResourceNotFoundError('Community not found')
+    }
+
+    // 2. Verifica se o usuário é membro
     const communityMember =
       await this.communityMembersRepository.findByUserAndCommunity(
         userId,

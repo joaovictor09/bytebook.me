@@ -19,6 +19,10 @@ export class InMemoryCommunitiesRepository implements CommunitiesRepository {
     return community
   }
 
+  async findAll(): Promise<Community[]> {
+    return this.items
+  }
+
   async findById(id: string): Promise<Community | null> {
     const community = this.items.find((item) => item.id === id) ?? null
     return community
