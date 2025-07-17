@@ -1,5 +1,12 @@
 import type { CommunityMember, Prisma } from '@prisma/client'
 
+export type CommunityMemberWithUser = CommunityMember & {
+  user: {
+    id: string
+    name: string
+  }
+}
+
 export abstract class CommunityMembersRepository {
   abstract create(
     data: Prisma.CommunityMemberUncheckedCreateInput,
@@ -13,7 +20,7 @@ export abstract class CommunityMembersRepository {
   abstract findManyByUserId(userId: string): Promise<CommunityMember[]>
   abstract findManyByCommunityId(
     communityId: string,
-  ): Promise<CommunityMember[]>
+  ): Promise<CommunityMemberWithUser[]>
 
   abstract deleteByUserAndCommunity(
     userId: string,

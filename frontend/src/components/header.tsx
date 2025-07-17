@@ -1,4 +1,10 @@
+import { useAuth } from '@/stores/use-auth'
+import { Button } from './ui/button'
+import { Link } from 'react-router'
+
 export function Header() {
+  const { logout, user } = useAuth()
+
   return (
     <header className="h-16 bg-primary flex items-center justify-center">
       <div className="container h-full flex-1 flex items-center gap-4">
@@ -10,9 +16,12 @@ export function Header() {
           <span className="text-primary-foreground text-sm font-bold">
             Home
           </span>
-          <span className="text-primary-foreground text-sm font-bold">
+          <Link
+            to={`/profiles/${user?.id}`}
+            className="text-primary-foreground text-sm font-bold"
+          >
             Perfil
-          </span>
+          </Link>
           <span className="text-primary-foreground text-sm font-bold">
             Scraps
           </span>
@@ -20,6 +29,15 @@ export function Header() {
             Comunidades
           </span>
         </nav>
+
+        <Button
+          size={'sm'}
+          variant={'outline'}
+          onClick={logout}
+          className="ml-auto"
+        >
+          Sair
+        </Button>
       </div>
     </header>
   )

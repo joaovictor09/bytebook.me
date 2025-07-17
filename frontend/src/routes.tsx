@@ -6,6 +6,7 @@ import { createBrowserRouter } from 'react-router'
 import { PrivateRoute } from './components/private-route.tsx'
 import { App } from './app'
 import { Profile } from './pages/profile'
+import { CommunityPage } from './pages/community/index.tsx'
 
 export const router = createBrowserRouter([
   {
@@ -16,8 +17,8 @@ export const router = createBrowserRouter([
         element: <PrivateRoute />,
         children: [
           { index: true, element: <Home /> },
-          { path: '/profile/:profileId', element: <Profile /> },
-          // Adicione outras rotas privadas aqui
+          { path: '/profiles/:profileId', element: <Profile /> },
+          { path: '/communities/:communityId', element: <CommunityPage /> },
         ],
       },
       {

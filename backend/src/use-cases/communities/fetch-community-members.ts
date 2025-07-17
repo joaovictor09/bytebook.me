@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common'
-import { CommunityMembersRepository } from '@/repositories/community-members-repository'
-import { CommunityMember } from '@prisma/client'
+import {
+  CommunityMembersRepository,
+  CommunityMemberWithUser,
+} from '@/repositories/community-members-repository'
 
 interface FetchCommunityMembersUseCaseRequest {
   communityId: string
 }
 
 interface FetchCommunityMembersUseCaseResponse {
-  communityMembers: CommunityMember[]
+  communityMembers: CommunityMemberWithUser[]
 }
 
 @Injectable()

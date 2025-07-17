@@ -1,6 +1,9 @@
 import { PrismaService } from '../prisma.service'
 import { Injectable } from '@nestjs/common'
-import { CommunityMembersRepository } from '@/repositories/community-members-repository'
+import {
+  CommunityMembersRepository,
+  CommunityMemberWithUser,
+} from '@/repositories/community-members-repository'
 import { Prisma, CommunityMember } from '@prisma/client'
 
 @Injectable()
@@ -40,10 +43,20 @@ export class PrismaCommunityMembersRepository
     })
   }
 
-  async findManyByCommunityId(communityId: string): Promise<CommunityMember[]> {
+  async findManyByCommunityId(
+    communityId: string,
+  ): Promise<CommunityMemberWithUser[]> {
     return await this.prisma.communityMember.findMany({
       where: {
         communityId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     })
   }
