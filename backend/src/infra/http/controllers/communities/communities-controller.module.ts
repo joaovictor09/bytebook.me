@@ -29,6 +29,7 @@ import { GetTopicDetailsController } from './get-topic-details.controller'
 import { GetCommunityDetailsController } from './get-community-details.controller'
 import { CommentOnTopicController } from './comment-on-topic.controller'
 import { CreateTopicCommentUseCase } from '@/use-cases/communities/create-topic-comment'
+import { FetchCommunitiesController } from './fetch-communities.controller'
 
 @Module({
   imports: [DatabaseModule],
@@ -45,6 +46,7 @@ import { CreateTopicCommentUseCase } from '@/use-cases/communities/create-topic-
     GetCommunityDetailsController,
     CreateTopicController,
     CommentOnTopicController,
+    FetchCommunitiesController,
   ],
   providers: [
     CreateCommunityUseCase,

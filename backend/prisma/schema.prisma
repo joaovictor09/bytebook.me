@@ -25,6 +25,7 @@ model User {
   passwordHash String   @map("password_hash")
   role         Role     @default(MEMBER)
   created_at   DateTime @default(now())
+  // TODO: add username
 
   // Relacionamentos de conexões
   sentConnections     Connection[]      @relation("ConnectionSender")
