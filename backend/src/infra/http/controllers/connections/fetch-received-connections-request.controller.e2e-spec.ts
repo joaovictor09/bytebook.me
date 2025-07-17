@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt'
 import { hash } from 'bcryptjs'
 import { randomUUID } from 'crypto'
 
-describe('Fetch Connections (E2E)', () => {
+describe('Fetch Received Pending Connections (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
@@ -25,40 +25,40 @@ describe('Fetch Connections (E2E)', () => {
     await app.init()
   })
 
-  test('[GET] /connections', async () => {
-    const userId = randomUUID()
-    const friendId = randomUUID()
+  test('[GET] /connections/pending/received', async () => {
+    const senderId = randomUUID()
+    const recipientId = randomUUID()
 
     await prisma.user.create({
       data: {
-        id: userId,
-        name: 'User',
-        email: 'user@example.com',
+        id: senderId,
+        name: 'Sender User',
+        email: 'sender@example.com',
         passwordHash: await hash('123456', 8),
       },
     })
 
     await prisma.user.create({
       data: {
-        id: friendId,
-        name: 'Friend',
-        email: 'friend@example.com',
+        id: recipientId,
+        name: 'Recipient User',
+        email: 'recipient@example.com',
         passwordHash: await hash('abcdef', 8),
       },
     })
 
     await prisma.connection.create({
       data: {
-        senderId: friendId,
-        recipientId: userId,
-        status: 'ACCEPTED',
+        senderId,
+        recipientId,
+        status: 'PENDING',
       },
     })
 
-    const accessToken = jwt.sign({ sub: userId })
+    const accessToken = jwt.sign({ sub: recipientId })
 
     const response = await request(app.getHttpServer())
-      .get('/connections')
+      .get('/connections/pending/received')
       .set('Authorization', `Bearer ${accessToken}`)
 
     expect(response.statusCode).toBe(200)
@@ -66,9 +66,9 @@ describe('Fetch Connections (E2E)', () => {
     expect(Array.isArray(response.body.connections)).toBe(true)
     expect(response.body.connections[0]).toEqual(
       expect.objectContaining({
-        senderId: friendId,
-        recipientId: userId,
-        status: 'ACCEPTED',
+        senderId,
+        recipientId,
+        status: 'PENDING',
       }),
     )
   })

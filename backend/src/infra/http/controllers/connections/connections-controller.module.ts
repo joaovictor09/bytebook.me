@@ -12,12 +12,18 @@ import { DeclineConnectionRequestController } from './decline-connection-request
 import { DeclineConnectionRequestUseCase } from '@/use-cases/connections/decline-connection-request'
 import { RemoveConnectionController } from './remove-connection.controller'
 import { RemoveConnectionUseCase } from '@/use-cases/connections/remove-connection'
+import { FetchReceivedConnectionsController } from './fetch-received-connections-request.controller'
+import { FetchSentConnectionsController } from './fetch-sent-connections-request.controller'
+import { FetchUserConnectionsController } from './fetch-user-connections.controller'
 
 @Module({
   imports: [DatabaseModule],
   controllers: [
-    SendConnectionRequestController,
     FetchConnectionsController,
+    FetchReceivedConnectionsController,
+    FetchSentConnectionsController,
+    FetchUserConnectionsController,
+    SendConnectionRequestController,
     AcceptConnectionRequestController,
     CancelConnectionRequestController,
     DeclineConnectionRequestController,

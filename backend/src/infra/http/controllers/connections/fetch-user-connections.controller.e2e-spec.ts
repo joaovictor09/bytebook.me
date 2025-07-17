@@ -4,11 +4,11 @@ import { INestApplication } from '@nestjs/common'
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
-import { JwtService } from '@nestjs/jwt'
 import { hash } from 'bcryptjs'
 import { randomUUID } from 'crypto'
+import { JwtService } from '@nestjs/jwt'
 
-describe('Fetch Connections (E2E)', () => {
+describe('Fetch User Accepted Connections (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
@@ -25,40 +25,39 @@ describe('Fetch Connections (E2E)', () => {
     await app.init()
   })
 
-  test('[GET] /connections', async () => {
-    const userId = randomUUID()
-    const friendId = randomUUID()
+  test('[GET] /connections/:userId/connections', async () => {
+    const userA = randomUUID()
+    const userB = randomUUID()
 
-    await prisma.user.create({
-      data: {
-        id: userId,
-        name: 'User',
-        email: 'user@example.com',
-        passwordHash: await hash('123456', 8),
-      },
+    await prisma.user.createMany({
+      data: [
+        {
+          id: userA,
+          name: 'User A',
+          email: 'a@example.com',
+          passwordHash: await hash('123456', 8),
+        },
+        {
+          id: userB,
+          name: 'User B',
+          email: 'b@example.com',
+          passwordHash: await hash('abcdef', 8),
+        },
+      ],
     })
 
-    await prisma.user.create({
+    const connection = await prisma.connection.create({
       data: {
-        id: friendId,
-        name: 'Friend',
-        email: 'friend@example.com',
-        passwordHash: await hash('abcdef', 8),
-      },
-    })
-
-    await prisma.connection.create({
-      data: {
-        senderId: friendId,
-        recipientId: userId,
+        senderId: userA,
+        recipientId: userB,
         status: 'ACCEPTED',
       },
     })
 
-    const accessToken = jwt.sign({ sub: userId })
+    const accessToken = jwt.sign({ sub: userB })
 
     const response = await request(app.getHttpServer())
-      .get('/connections')
+      .get(`/connections/${userA}/connections`)
       .set('Authorization', `Bearer ${accessToken}`)
 
     expect(response.statusCode).toBe(200)
@@ -66,8 +65,9 @@ describe('Fetch Connections (E2E)', () => {
     expect(Array.isArray(response.body.connections)).toBe(true)
     expect(response.body.connections[0]).toEqual(
       expect.objectContaining({
-        senderId: friendId,
-        recipientId: userId,
+        id: connection.id,
+        senderId: userA,
+        recipientId: userB,
         status: 'ACCEPTED',
       }),
     )
