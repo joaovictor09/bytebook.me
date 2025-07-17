@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from 'react-router'
 import { useAuth } from '@/stores/use-auth'
+import { AppLayout } from '@/layouts/app-layout'
 
 export function PrivateRoute() {
   const { user, isLoading } = useAuth()
@@ -12,5 +13,9 @@ export function PrivateRoute() {
     return <Navigate to="/auth" replace />
   }
 
-  return <Outlet />
+  return (
+    <AppLayout>
+      <Outlet />
+    </AppLayout>
+  )
 }

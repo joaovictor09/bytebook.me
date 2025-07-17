@@ -21,7 +21,7 @@ export const useAuth = create<AuthStore>((set) => ({
   fetchUser: async () => {
     try {
       const res = await api.get('/me')
-      set({ user: res.data, isLoading: false })
+      set({ user: res.data.user, isLoading: false })
     } catch {
       set({ user: null, isLoading: false })
     }

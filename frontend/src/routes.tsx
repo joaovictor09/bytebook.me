@@ -5,6 +5,7 @@ import { NotFound } from './pages/not-found/page'
 import { createBrowserRouter } from 'react-router'
 import { PrivateRoute } from './components/private-route.tsx'
 import { App } from './app'
+import { Profile } from './pages/profile'
 
 export const router = createBrowserRouter([
   {
@@ -12,11 +13,10 @@ export const router = createBrowserRouter([
     element: <App />, // App usa useAuthInit
     children: [
       {
-        element: <PrivateRoute />, // Tudo daqui pra baixo exige auth
+        element: <PrivateRoute />,
         children: [
           { index: true, element: <Home /> },
-          { path: 'dashboard', element: <div>Dashboard</div> },
-          { path: 'profile', element: <div>Perfil</div> },
+          { path: '/profile/:profileId', element: <Profile /> },
           // Adicione outras rotas privadas aqui
         ],
       },

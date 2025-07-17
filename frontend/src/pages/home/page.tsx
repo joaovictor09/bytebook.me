@@ -1,32 +1,26 @@
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import { useAuth } from '@/stores/use-auth'
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router'
 
 export function Home() {
-  const [transactions, setTransactions] = useState()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
 
-  async function fetchRecentsTransaction() {
-    const response = await api.get('/connections/request?status=ACCEPTED')
-
-    setTransactions(response.data)
-  }
-
-  useEffect(() => {
-    fetchRecentsTransaction()
-  }, [])
+  const { data } = useQuery({
+    queryKey: ['communities'],
+    queryFn: () => api.get('/communities'),
+  })
 
   return (
     <>
       <span>
-        {JSON.stringify(transactions, null, 2)}
+        {JSON.stringify(data?.data)}
 
         <Button onClick={logout}>Sair</Button>
 
         <Button asChild>
-          <Link to={'/dashboard'}>Dashboard</Link>
+          <Link to={`/profile/${user?.id}`}>Meu perfil</Link>
         </Button>
       </span>
     </>
