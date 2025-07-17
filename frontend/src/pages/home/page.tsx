@@ -6,10 +6,10 @@ import { Link } from 'react-router'
 
 export function Home() {
   const [transactions, setTransactions] = useState()
-  const { logout, setAccessToken } = useAuth()
+  const { logout } = useAuth()
 
   async function fetchRecentsTransaction() {
-    const response = await api.get('transactions/recents')
+    const response = await api.get('/communities/search')
 
     setTransactions(response.data)
   }
@@ -23,13 +23,6 @@ export function Home() {
       <span>
         {JSON.stringify(transactions, null, 2)}
 
-        <Button
-          onClick={() => {
-            setAccessToken(null)
-          }}
-        >
-          Limpar token
-        </Button>
         <Button onClick={logout}>Sair</Button>
 
         <Button asChild>
