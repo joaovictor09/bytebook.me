@@ -28,7 +28,7 @@ export function Profile() {
       <div className="w-full"></div>
 
       <div className="max-w-md w-full space-y-4">
-        <Friends />
+        <Friends userId={profileId} />
         <Communities userId={profileId} />
       </div>
     </div>

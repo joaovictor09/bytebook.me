@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common'
 import { FetchUserConnectionsUseCase } from '@/use-cases/connections/fetch-user-connections'
 
-@Controller('/connections/:userId/connections')
+@Controller('/users/:userId/connections')
 export class FetchUserConnectionsController {
   constructor(private fetchUserConnections: FetchUserConnectionsUseCase) {}
 

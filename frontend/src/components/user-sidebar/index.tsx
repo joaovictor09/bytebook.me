@@ -28,7 +28,7 @@ export function UserSidebar({ userId }: UserSidebarProps) {
     return (
       <Card className="w-64 gap-4 p-4">
         <div className="flex flex-col gap-4">
-          <div className="w-full aspect-square bg-secondary" />
+          <div className="w-full aspect-square bg-secondary rounded-xl" />
           <span>{user.name}</span>
           <span>description</span>
         </div>

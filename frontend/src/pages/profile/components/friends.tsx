@@ -1,8 +1,25 @@
 import { FriendCard } from '@/components/friend-card'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useGetUserConnections } from '@/queries/connections/use-get-user-connections'
 
-export function Friends() {
+interface FriendsProps {
+  userId: string
+}
+
+export function Friends({ userId }: FriendsProps) {
+  const { data, isLoading } = useGetUserConnections(userId)
+
+  if (isLoading) {
+    return <span>Carregando comunidades</span>
+  }
+
+  if (!data) {
+    return <span>Algo deu errado.</span>
+  }
+
+  const { connections } = data.data
+
   return (
     <Card className="p-4 gap-2">
       <CardHeader className="pb-0 px-0">
@@ -15,12 +32,9 @@ export function Friends() {
       </CardHeader>
 
       <CardContent className="grid grid-cols-3 gap-2 px-0">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <FriendCard key={i} />
+        {connections.map((connection, i) => (
+          <FriendCard key={i} user={connection.friend} />
         ))}
-        {/* {data.data.communities.map((community) => (
-          <CommunityCard key={community.id} community={community} />
-        ))} */}
       </CardContent>
     </Card>
   )

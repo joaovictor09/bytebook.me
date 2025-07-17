@@ -1,14 +1,14 @@
-import type { Community } from '@/types/community'
+import type { User } from '@/types/user'
 
-// interface CommunityCardProps {
-//   community: Community
-// }
+interface FriendCardProps {
+  user: User
+}
 
-export function FriendCard() {
+export function FriendCard({ user }: FriendCardProps) {
   return (
     <div className="bg-card text-card-foreground flex flex-col items-center p-2 rounded-xl border shadow-sm">
       <div className="aspect-square bg-secondary rounded-xl w-full" />
-      <span className="text-center break-words text-sm">Cliente</span>
+      <span className="text-center break-words text-sm">{user.name}</span>
     </div>
   )
 }
