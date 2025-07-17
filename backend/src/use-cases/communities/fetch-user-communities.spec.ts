@@ -1,53 +1,58 @@
 import { FetchUserCommunitiesUseCase } from './fetch-user-communities'
-import { InMemoryCommunityMembersRepository } from 'test/repositories/in-memory-community-members-repository'
+import { InMemoryCommunitiesRepository } from 'test/repositories/in-memory-communities-repository'
 
 describe('Fetch User Communities Use Case', () => {
-  let communityMembersRepository: InMemoryCommunityMembersRepository
+  let communitiesRepository: InMemoryCommunitiesRepository
   let fetchUserCommunitiesUseCase: FetchUserCommunitiesUseCase
 
   beforeEach(() => {
-    communityMembersRepository = new InMemoryCommunityMembersRepository()
+    communitiesRepository = new InMemoryCommunitiesRepository()
     fetchUserCommunitiesUseCase = new FetchUserCommunitiesUseCase(
-      communityMembersRepository,
+      communitiesRepository,
     )
   })
 
   it('should fetch all communities that a user is member of', async () => {
     const userId = 'user-123'
 
-    communityMembersRepository.items.push(
+    // Add communities
+    communitiesRepository.items.push(
       {
-        id: 'membership-1',
-        communityId: 'community-1',
-        userId,
-        joinedAt: new Date(),
+        id: 'community-1',
+        name: 'Community 1',
+        description: 'Test community 1',
+        createdAt: new Date(),
+        memberCount: 1,
+        ownerId: userId,
       },
       {
-        id: 'membership-2',
-        communityId: 'community-2',
-        userId,
-        joinedAt: new Date(),
+        id: 'community-2',
+        name: 'Community 2',
+        description: 'Test community 2',
+        createdAt: new Date(),
+        memberCount: 1,
+        ownerId: userId,
       },
     )
 
-    const { communityMembers } = await fetchUserCommunitiesUseCase.execute({
+    const { communities } = await fetchUserCommunitiesUseCase.execute({
       userId,
     })
 
-    expect(communityMembers).toHaveLength(2)
-    expect(communityMembers).toEqual(
+    expect(communities).toHaveLength(2)
+    expect(communities).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ communityId: 'community-1', userId }),
-        expect.objectContaining({ communityId: 'community-2', userId }),
+        expect.objectContaining({ id: 'community-1' }),
+        expect.objectContaining({ id: 'community-2' }),
       ]),
     )
   })
 
   it('should return empty array if user is not member of any community', async () => {
-    const { communityMembers } = await fetchUserCommunitiesUseCase.execute({
+    const { communities } = await fetchUserCommunitiesUseCase.execute({
       userId: 'nonexistent-user',
     })
 
-    expect(communityMembers).toEqual([])
+    expect(communities).toEqual([])
   })
 })

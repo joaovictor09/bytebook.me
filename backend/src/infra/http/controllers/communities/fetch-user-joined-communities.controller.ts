@@ -7,12 +7,12 @@ export class FetchUserJoinedCommunitiesController {
 
   @Get()
   async handle(@Param('userId') userId: string) {
-    const { communityMembers } = await this.fetchUserCommunities.execute({
+    const { communities } = await this.fetchUserCommunities.execute({
       userId,
     })
 
     return {
-      communityMembers,
+      communities,
     }
   }
 }

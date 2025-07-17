@@ -28,7 +28,7 @@ export class PrismaCommunitiesRepository implements CommunitiesRepository {
       where: {
         name: {
           contains: name,
-          mode: 'insensitive', // busca case-insensitive
+          mode: 'insensitive',
         },
       },
     })

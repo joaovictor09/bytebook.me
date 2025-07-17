@@ -89,11 +89,9 @@ describe('Fetch User Joined Communities (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
 
-    expect(Array.isArray(response.body.communityMembers)).toBe(true)
-    expect(response.body.communityMembers.length).toBe(2)
-    const communityIds = response.body.communityMembers.map(
-      (m: any) => m.communityId,
-    )
+    expect(Array.isArray(response.body.communities)).toBe(true)
+    expect(response.body.communities.length).toBe(2)
+    const communityIds = response.body.communities.map((c: any) => c.id)
     expect(communityIds).toContain(community1Id)
     expect(communityIds).toContain(community2Id)
   })
@@ -117,7 +115,7 @@ describe('Fetch User Joined Communities (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .expect(200)
 
-    expect(Array.isArray(response.body.communityMembers)).toBe(true)
-    expect(response.body.communityMembers.length).toBe(0)
+    expect(Array.isArray(response.body.communities)).toBe(true)
+    expect(response.body.communities.length).toBe(0)
   })
 })

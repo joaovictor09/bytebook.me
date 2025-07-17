@@ -1,27 +1,27 @@
 import { Injectable } from '@nestjs/common'
-import { CommunityMembersRepository } from '@/repositories/community-members-repository'
-import { CommunityMember } from '@prisma/client'
+import { Community } from '@prisma/client'
+import { CommunitiesRepository } from '@/repositories/communities-repository'
 
 interface FetchUserCommunitiesUseCaseRequest {
   userId: string
 }
 
 interface FetchUserCommunitiesUseCaseResponse {
-  communityMembers: CommunityMember[]
+  communities: Community[]
 }
 
 @Injectable()
 export class FetchUserCommunitiesUseCase {
-  constructor(private communityMembersRepository: CommunityMembersRepository) {}
+  constructor(private communitiesRepository: CommunitiesRepository) {}
 
   async execute({
     userId,
   }: FetchUserCommunitiesUseCaseRequest): Promise<FetchUserCommunitiesUseCaseResponse> {
-    const communityMembers =
-      await this.communityMembersRepository.findManyByUserId(userId)
+    const communities =
+      await this.communitiesRepository.findManyByUserId(userId)
 
     return {
-      communityMembers,
+      communities,
     }
   }
 }
