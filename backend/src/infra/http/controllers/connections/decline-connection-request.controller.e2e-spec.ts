@@ -25,7 +25,7 @@ describe('Decline Connection Request (E2E)', () => {
     await app.init()
   })
 
-  test('[PATCH] /connections/request/decline/:connectionId', async () => {
+  test('[PATCH] /connections/:connectionId/decline', async () => {
     const senderId = randomUUID()
     const recipientId = randomUUID()
 
@@ -59,7 +59,7 @@ describe('Decline Connection Request (E2E)', () => {
     const accessToken = jwt.sign({ sub: recipientId })
 
     const response = await request(app.getHttpServer())
-      .patch(`/connections/request/decline/${connection.id}`)
+      .patch(`/connections/${connection.id}/decline`)
       .set('Authorization', `Bearer ${accessToken}`)
 
     expect(response.statusCode).toBe(201)

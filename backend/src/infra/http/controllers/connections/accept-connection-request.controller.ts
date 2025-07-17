@@ -1,13 +1,13 @@
-import { Controller, HttpCode, Param, Post } from '@nestjs/common'
+import { Controller, HttpCode, Param, Patch } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { AcceptConnectionRequestUseCase } from '@/use-cases/connections/accept-connection-request'
 
-@Controller('/connections/request/accept/:connectionId')
+@Controller('/connections/:connectionId/accept')
 export class AcceptConnectionRequestController {
   constructor(private acceptConnection: AcceptConnectionRequestUseCase) {}
 
-  @Post()
+  @Patch()
   @HttpCode(201)
   async handle(
     @Param('connectionId') connectionId: string,

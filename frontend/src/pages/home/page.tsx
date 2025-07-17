@@ -9,7 +9,7 @@ export function Home() {
   const { logout } = useAuth()
 
   async function fetchRecentsTransaction() {
-    const response = await api.get('/communities/search')
+    const response = await api.get('/connections/request?status=ACCEPTED')
 
     setTransactions(response.data)
   }

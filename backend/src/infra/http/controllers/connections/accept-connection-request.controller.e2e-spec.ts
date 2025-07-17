@@ -25,7 +25,7 @@ describe('Accept Connection Request (E2E)', () => {
     await app.init()
   })
 
-  test('[POST] /connections/request/accept/:connectionId', async () => {
+  test('[POST] /connections/:connectionId/accept', async () => {
     const senderId = randomUUID()
     const recipientId = randomUUID()
 
@@ -58,7 +58,7 @@ describe('Accept Connection Request (E2E)', () => {
     const accessToken = jwt.sign({ sub: recipientId })
 
     const response = await request(app.getHttpServer())
-      .post(`/connections/request/accept/${connection.id}`)
+      .patch(`/connections/${connection.id}/accept`)
       .set('Authorization', `Bearer ${accessToken}`)
 
     expect(response.statusCode).toBe(201)

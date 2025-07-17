@@ -25,11 +25,10 @@ describe('Cancel Connection Request (E2E)', () => {
     await app.init()
   })
 
-  test('[PATCH] /connections/request/cancel/:connectionId', async () => {
+  test('[PATCH] /connections/:connectionId/cancel', async () => {
     const senderId = randomUUID()
     const recipientId = randomUUID()
 
-    // Cria usuários
     await prisma.user.create({
       data: {
         id: senderId,
@@ -48,7 +47,6 @@ describe('Cancel Connection Request (E2E)', () => {
       },
     })
 
-    // Cria conexão pendente
     const connection = await prisma.connection.create({
       data: {
         senderId,
@@ -60,7 +58,7 @@ describe('Cancel Connection Request (E2E)', () => {
     const accessToken = jwt.sign({ sub: senderId })
 
     const response = await request(app.getHttpServer())
-      .patch(`/connections/request/cancel/${connection.id}`)
+      .patch(`/connections/${connection.id}/cancel`)
       .set('Authorization', `Bearer ${accessToken}`)
 
     expect(response.statusCode).toBe(201)

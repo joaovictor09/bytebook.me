@@ -25,7 +25,7 @@ describe('Fetch User Connections (E2E)', () => {
     await app.init()
   })
 
-  test('[GET] /connections/request', async () => {
+  test('[GET] /connections', async () => {
     const userId = randomUUID()
     const otherUserId = randomUUID()
 
@@ -51,14 +51,14 @@ describe('Fetch User Connections (E2E)', () => {
       data: {
         senderId: userId,
         recipientId: otherUserId,
-        status: 'PENDING',
+        status: 'ACCEPTED',
       },
     })
 
     const accessToken = jwt.sign({ sub: userId })
 
     const response = await request(app.getHttpServer())
-      .get('/connections/request')
+      .get('/connections')
       .set('Authorization', `Bearer ${accessToken}`)
 
     expect(response.statusCode).toBe(200)
@@ -68,7 +68,7 @@ describe('Fetch User Connections (E2E)', () => {
           id: expect.any(String),
           senderId: userId,
           recipientId: otherUserId,
-          status: 'PENDING',
+          status: 'ACCEPTED',
         }),
       ],
     })

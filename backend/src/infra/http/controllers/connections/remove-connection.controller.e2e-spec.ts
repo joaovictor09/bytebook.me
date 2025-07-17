@@ -25,7 +25,7 @@ describe('Remove Connection (E2E)', () => {
     await app.init()
   })
 
-  test('[PATCH] /connections/remove/:connectionId', async () => {
+  test('[PATCH] /connections/:connectionId', async () => {
     const userAId = randomUUID()
     const userBId = randomUUID()
 
@@ -58,7 +58,7 @@ describe('Remove Connection (E2E)', () => {
     const accessToken = jwt.sign({ sub: userAId })
 
     const response = await request(app.getHttpServer())
-      .delete(`/connections/remove/${connection.id}`)
+      .delete(`/connections/${connection.id}`)
       .set('Authorization', `Bearer ${accessToken}`)
 
     expect(response.statusCode).toBe(200)

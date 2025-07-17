@@ -1,6 +1,6 @@
 import { FetchUserConnectionsUseCase } from '@/use-cases/connections/fetch-user-connections'
 import { SendConnectionRequestUseCase } from '@/use-cases/connections/send-connection-request'
-import { FetchUserConnectionsController } from './fetch-user-connections.controller'
+import { FetchConnectionsController } from './fetch-connections.controller'
 import { SendConnectionRequestController } from './send-connection-request.controller'
 import { Module } from '@nestjs/common'
 import { DatabaseModule } from '@/infra/database/database.module'
@@ -17,7 +17,7 @@ import { RemoveConnectionUseCase } from '@/use-cases/connections/remove-connecti
   imports: [DatabaseModule],
   controllers: [
     SendConnectionRequestController,
-    FetchUserConnectionsController,
+    FetchConnectionsController,
     AcceptConnectionRequestController,
     CancelConnectionRequestController,
     DeclineConnectionRequestController,

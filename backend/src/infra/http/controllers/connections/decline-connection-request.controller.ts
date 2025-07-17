@@ -3,7 +3,7 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { DeclineConnectionRequestUseCase } from '@/use-cases/connections/decline-connection-request'
 
-@Controller('/connections/request/decline/:connectionId')
+@Controller('/connections/:connectionId/decline')
 export class DeclineConnectionRequestController {
   constructor(private declineConnection: DeclineConnectionRequestUseCase) {}
 

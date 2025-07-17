@@ -3,7 +3,7 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { CancelConnectionRequestUseCase } from '@/use-cases/connections/cancel-connection-request'
 
-@Controller('/connections/request/cancel/:connectionId')
+@Controller('/connections/:connectionId/cancel')
 export class CancelConnectionRequestController {
   constructor(private cancelConnection: CancelConnectionRequestUseCase) {}
 
