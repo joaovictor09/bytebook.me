@@ -1,3 +1,4 @@
+import { ConnectionWithUserDto } from '@/dtos/connections.dto'
 import { ConnectionsRepository } from '@/repositories/connections-repository'
 import { Injectable } from '@nestjs/common'
 
@@ -8,18 +9,7 @@ interface FetchUserConnectionsRequest {
 }
 
 interface FetchUserConnectionsResponse {
-  connections: Array<{
-    id: string
-    status: string
-    createdAt: Date
-    updatedAt: Date
-    senderId: string
-    recipientId: string
-    friend: {
-      id: string
-      name: string
-    }
-  }>
+  connections: ConnectionWithUserDto[]
 }
 
 @Injectable()
@@ -44,10 +34,9 @@ export class FetchUserConnectionsUseCase {
           id: conn.id,
           status: conn.status,
           createdAt: conn.createdAt,
-          updatedAt: conn.updatedAt,
           recipientId: conn.recipientId,
           senderId: conn.senderId,
-          friend: {
+          user: {
             id: friend.id,
             name: friend.name,
           },

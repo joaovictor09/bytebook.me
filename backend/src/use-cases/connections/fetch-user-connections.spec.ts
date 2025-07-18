@@ -12,10 +12,44 @@ describe('Fetch User Connections Use Case', () => {
     usersRepository = new InMemoryUsersRepository()
     connectionsRepository = new InMemoryConnectionsRepository(usersRepository)
     sut = new FetchUserConnectionsUseCase(connectionsRepository)
+
+    usersRepository.items.push(
+      {
+        id: 'user1',
+        name: 'user1',
+        email: 'user1@example.com',
+        passwordHash: 'hash',
+        created_at: new Date(),
+        role: 'MEMBER',
+      },
+      {
+        id: 'user2',
+        name: 'user2',
+        email: 'user2@example.com',
+        passwordHash: 'hash',
+        created_at: new Date(),
+        role: 'MEMBER',
+      },
+      {
+        id: 'user3',
+        name: 'user3',
+        email: 'user3@example.com',
+        passwordHash: 'hash',
+        created_at: new Date(),
+        role: 'MEMBER',
+      },
+      {
+        id: 'user4',
+        name: 'user4',
+        email: 'user4@example.com',
+        passwordHash: 'hash',
+        created_at: new Date(),
+        role: 'MEMBER',
+      },
+    )
   })
 
   it('should fetch all connections of a user without filters', async () => {
-    // Inserir conexões para teste
     connectionsRepository.items.push(
       {
         id: '1',
