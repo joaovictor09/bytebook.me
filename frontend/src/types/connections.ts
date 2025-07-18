@@ -9,6 +9,6 @@ export type Connection = {
   updatedAt: Date
 }
 
-export type ConnectionWithFriend = Connection & {
-  friend: User
+export type ConnectionWithUser = Connection & {
+  user: User
 }

@@ -1,8 +1,8 @@
 import { api } from '@/lib/api'
-import type { ConnectionWithFriend } from '@/types/connections'
+import type { ConnectionWithUser } from '@/types/connections'
 
 interface GetUserConnectionsResponse {
-  connections: ConnectionWithFriend[]
+  connections: ConnectionWithUser[]
 }
 
 export function getUserConnections(id: string) {

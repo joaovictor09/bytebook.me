@@ -5,16 +5,25 @@ import { Badge } from '@/components/ui/badge'
 import {
   User,
   MapPin,
-  Users,
   MessageCircle,
   Terminal,
   Pencil,
   UserPlus,
   Send,
 } from 'lucide-react'
+import { useParams } from 'react-router'
+import { useAuth } from '@/stores/use-auth'
+import { useGetUserById } from '@/queries/users/use-get-user-by-id'
+import { Connections } from './components/connections'
+import { Communities } from './components/communities'
+import { ConnectButton } from './components/connect-button'
 
 export function Profile() {
-  const isOwnProfile = true
+  const { user: authenticatedUser } = useAuth()
+  const { profileId } = useParams() as { profileId: string }
+  const isOwnProfile = authenticatedUser?.id === profileId
+
+  const { data, isLoading } = useGetUserById(profileId)
 
   const userData = {
     name: isOwnProfile ? 'Seu Nome' : 'Maria Frontend',
@@ -39,23 +48,15 @@ export function Profile() {
     ],
   }
 
-  const connectionsData = [
-    { name: 'João Backend', title: 'Backend Dev' },
-    { name: 'Ana DevOps', title: 'DevOps Engineer' },
-    { name: 'Pedro Mobile', title: 'Mobile Dev' },
-    { name: 'Julia Fullstack', title: 'Fullstack Dev' },
-    { name: 'Carlos Data', title: 'Data Scientist' },
-    { name: 'Lara UX', title: 'UX Designer' },
-  ]
+  if (isLoading) {
+    return <span>Carregando...</span>
+  }
 
-  const communitiesData = [
-    { name: 'React Brasil', members: 12543 },
-    { name: 'Python Devs', members: 8765 },
-    { name: 'DevOps & Cloud', members: 5432 },
-    { name: 'JavaScript Ninjas', members: 15678 },
-    { name: 'Frontend Tips', members: 7654 },
-    { name: 'Iniciantes em Programação', members: 23456 },
-  ]
+  if (!data) {
+    return <span>Usuário não encontrado</span>
+  }
+
+  const { user } = data.data
 
   return (
     <div>
@@ -63,18 +64,14 @@ export function Profile() {
         {/* Sidebar com Perfil */}
         <div className="lg:col-span-1 space-y-4">
           {/* Card de Perfil */}
-          <Card className="border-[#E2E8F0]">
+          <Card>
             <CardContent className="p-6 text-center">
-              <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <User className="w-12 h-12 text-gray-400" />
               </div>
-              <h2 className="text-xl font-bold text-[#2D3748] mb-1">
-                {userData.name}
-              </h2>
+              <h2 className="text-xl font-bold mb-1">{user.name}</h2>
               <p className="text-sm text-gray-600 mb-1">{userData.username}</p>
-              <p className="text-sm font-medium text-[#2D3748] mb-2">
-                {userData.title}
-              </p>
+              <p className="text-sm font-medium mb-2">{userData.title}</p>
 
               <div className="flex items-center justify-center gap-1 text-sm text-gray-500 mb-4">
                 <MapPin className="w-4 h-4" />
@@ -91,10 +88,7 @@ export function Profile() {
                 </Button>
               ) : (
                 <div className="space-y-2">
-                  <Button className="w-full bg-[#2D3748] hover:bg-[#1A202C] text-white text-sm">
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    Conectar
-                  </Button>
+                  <ConnectButton userId={profileId} />
                   <Button
                     variant="outline"
                     className="w-full text-sm bg-transparent"
@@ -176,74 +170,12 @@ export function Profile() {
 
             {/* Conexões */}
             <TabsContent value="connections" className="space-y-4">
-              <Card className="border-[#E2E8F0]">
-                <CardHeader className="pb-2">
-                  <h3 className="text-sm font-semibold text-[#2D3748] flex items-center gap-2">
-                    <Users className="w-4 h-4" />
-                    conexões ({userData.connections})
-                  </h3>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-4">
-                    {connectionsData.map((connection, i) => (
-                      <div key={i} className="flex items-center space-x-2">
-                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                          <User className="w-5 h-5 text-gray-400" />
-                        </div>
-                        <div>
-                          <div className="font-medium text-sm text-[#2D3748]">
-                            {connection.name}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            {connection.title}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <Button
-                    variant="link"
-                    className="w-full mt-4 text-[#2D3748] text-sm"
-                  >
-                    Ver todas as conexões
-                  </Button>
-                </CardContent>
-              </Card>
+              <Connections userId={profileId} />
             </TabsContent>
 
             {/* Comunidades */}
             <TabsContent value="communities" className="space-y-4">
-              <Card className="border-[#E2E8F0]">
-                <CardHeader className="pb-2">
-                  <h3 className="text-sm font-semibold text-[#2D3748] flex items-center gap-2">
-                    <Terminal className="w-4 h-4" />
-                    comunidades
-                  </h3>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 gap-3">
-                    {communitiesData.map((community, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center justify-between py-2 border-b border-gray-100"
-                      >
-                        <div className="font-medium text-sm text-[#2D3748]">
-                          {community.name}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {community.members.toLocaleString()} membros
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <Button
-                    variant="link"
-                    className="w-full mt-4 text-[#2D3748] text-sm"
-                  >
-                    Ver todas as comunidades
-                  </Button>
-                </CardContent>
-              </Card>
+              <Communities userId={profileId} />
             </TabsContent>
           </Tabs>
 
