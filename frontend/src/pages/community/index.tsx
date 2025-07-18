@@ -3,17 +3,17 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import {
-  Users,
-  MessageCircle,
-  Plus,
-  User,
-  Terminal,
-  UserMinus,
-  UserPlus,
-} from 'lucide-react'
+import { Users, MessageCircle, Plus, User, Terminal } from 'lucide-react'
+import { useGetCommunityDetails } from '@/queries/communities/use-get-community-details'
+import { useParams } from 'react-router'
+import { JoinCommunityButton } from './components/join-community-button'
 
 export function CommunityPage() {
+  const { communityId } = useParams() as {
+    communityId: string
+  }
+  const { data, isPending } = useGetCommunityDetails(communityId)
+
   const communityData = {
     id: 1,
     name: 'React Developers Brasil',
@@ -60,24 +60,32 @@ export function CommunityPage() {
     },
   ]
 
+  if (isPending) {
+    return <span>Carregando</span>
+  }
+
+  if (!data) {
+    return <span>Erro</span>
+  }
+
+  const { community } = data.data
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
       {/* Cabeçalho da Comunidade */}
-      <Card className="border-[#E2E8F0] mb-6">
+      <Card className="mb-6">
         <CardContent className="p-6">
           <div className="flex items-start md:items-center flex-col md:flex-row justify-between gap-4">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
-                <Terminal className="w-8 h-8 text-gray-400" />
+              <div className="w-16 h-16 bg-muted-foreground rounded flex items-center justify-center">
+                <Terminal className="w-8 h-8 text-muted" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-[#2D3748] mb-1">
-                  {communityData.name}
-                </h1>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
+                <h1 className="text-2xl font-bold mb-1">{community.name}</h1>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
-                    {communityData.members.toLocaleString()} membros
+                    {community.memberCount} membros
                   </span>
                   <span className="flex items-center gap-1">
                     <MessageCircle className="w-4 h-4" />
@@ -86,17 +94,7 @@ export function CommunityPage() {
                 </div>
               </div>
             </div>
-            {communityData.isJoined ? (
-              <Button variant="outline" className="bg-transparent">
-                <UserMinus className="w-4 h-4 mr-2" />
-                Sair da Comunidade
-              </Button>
-            ) : (
-              <Button className="bg-[#2D3748] hover:bg-[#1A202C] text-white">
-                <UserPlus className="w-4 h-4 mr-2" />
-                Participar
-              </Button>
-            )}
+            <JoinCommunityButton communityId={communityId} />
           </div>
         </CardContent>
       </Card>
@@ -105,26 +103,22 @@ export function CommunityPage() {
         {/* Sidebar */}
         <div className="lg:col-span-1 space-y-4">
           {/* Sobre a Comunidade */}
-          <Card className="border-[#E2E8F0]">
+          <Card>
             <CardHeader className="pb-2">
-              <h3 className="text-sm font-semibold text-[#2D3748]">
-                sobre a comunidade
-              </h3>
+              <h3 className="text-sm font-semibold">sobre a comunidade</h3>
             </CardHeader>
             <CardContent className="space-y-3">
-              <p className="text-sm text-gray-700">
-                {communityData.description}
-              </p>
-              <div className="text-xs text-gray-500">
+              <p className="text-sm">{community.description}</p>
+              <div className="text-xs text-muted-foreground">
                 Criada em {communityData.createdAt}
               </div>
             </CardContent>
           </Card>
 
           {/* Membros */}
-          <Card className="border-[#E2E8F0]">
+          <Card>
             <CardHeader className="pb-2">
-              <h3 className="text-sm font-semibold text-[#2D3748] flex items-center gap-2">
+              <h3 className="text-sm font-semibold  flex items-center gap-2">
                 <Users className="w-4 h-4" />
                 membros ({communityData.members.toLocaleString()})
               </h3>
@@ -139,10 +133,7 @@ export function CommunityPage() {
                   </div>
                 ))}
               </div>
-              <Button
-                variant="link"
-                className="w-full mt-2 text-[#2D3748] text-xs p-0"
-              >
+              <Button variant="link" className="w-full mt-2  text-xs p-0">
                 ver todos
               </Button>
             </CardContent>
@@ -153,11 +144,9 @@ export function CommunityPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Criar Tópico (se for membro) */}
           {communityData.isJoined && (
-            <Card className="border-[#E2E8F0]">
+            <Card>
               <CardHeader className="pb-2">
-                <h3 className="text-sm font-semibold text-[#2D3748]">
-                  criar novo tópico
-                </h3>
+                <h3 className="text-sm font-semibold ">criar novo tópico</h3>
               </CardHeader>
               <CardContent className="space-y-4">
                 <Input
@@ -178,9 +167,9 @@ export function CommunityPage() {
           )}
 
           {/* Lista de Tópicos */}
-          <Card className="border-[#E2E8F0]">
+          <Card>
             <CardHeader className="pb-2">
-              <h3 className="text-lg font-semibold text-[#2D3748] flex items-center gap-2">
+              <h3 className="text-lg font-semibold  flex items-center gap-2">
                 <MessageCircle className="w-5 h-5" />
                 tópicos recentes
               </h3>
@@ -193,7 +182,7 @@ export function CommunityPage() {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className="font-medium text-[#2D3748] hover:text-blue-600 cursor-pointer mb-1">
+                      <h4 className="font-medium  hover:text-blue-600 cursor-pointer mb-1">
                         {topic.title}
                       </h4>
                       <div className="flex items-center gap-4 text-xs text-gray-500">
