@@ -1,3 +1,4 @@
+import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import type { ReactNode } from 'react'
 
@@ -10,7 +11,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     <div className="space-y-4 min-h-screen flex flex-col">
       <Header />
       <main className="container mx-auto flex-1">{children}</main>
-      <footer>footer</footer>
+      <Footer />
     </div>
   )
 }

@@ -7,6 +7,7 @@ import { PrivateRoute } from './components/private-route.tsx'
 import { App } from './app'
 import { Profile } from './pages/profile'
 import { CommunityPage } from './pages/community/index.tsx'
+import { CommunitiesPage } from './pages/communities/index.tsx'
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <Home /> },
           { path: '/profiles/:profileId', element: <Profile /> },
+          { path: '/communities', element: <CommunitiesPage /> },
           { path: '/communities/:communityId', element: <CommunityPage /> },
         ],
       },
