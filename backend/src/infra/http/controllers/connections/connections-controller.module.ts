@@ -15,6 +15,8 @@ import { RemoveConnectionUseCase } from '@/use-cases/connections/remove-connecti
 import { FetchReceivedConnectionsController } from './fetch-received-connections-request.controller'
 import { FetchSentConnectionsController } from './fetch-sent-connections-request.controller'
 import { FetchUserConnectionsController } from './fetch-user-connections.controller'
+import { GetConnectionStatusController } from './get-connection-status.controller'
+import { GetConnectionStatusUseCase } from '@/use-cases/connections/get-connection-status'
 
 @Module({
   imports: [DatabaseModule],
@@ -28,6 +30,7 @@ import { FetchUserConnectionsController } from './fetch-user-connections.control
     CancelConnectionRequestController,
     DeclineConnectionRequestController,
     RemoveConnectionController,
+    GetConnectionStatusController,
   ],
   providers: [
     SendConnectionRequestUseCase,
@@ -36,6 +39,7 @@ import { FetchUserConnectionsController } from './fetch-user-connections.control
     CancelConnectionRequestUseCase,
     DeclineConnectionRequestUseCase,
     RemoveConnectionUseCase,
+    GetConnectionStatusUseCase,
   ],
 })
 export class ConnectionsControllerModule {}
