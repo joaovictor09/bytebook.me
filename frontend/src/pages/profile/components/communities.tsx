@@ -22,9 +22,9 @@ export function Communities({ userId }: CommunitiesProps) {
   const { communities } = data.data
 
   return (
-    <Card className="border-[#E2E8F0]">
+    <Card>
       <CardHeader className="pb-2">
-        <h3 className="text-sm font-semibold text-[#2D3748] flex items-center gap-2">
+        <h3 className="text-sm font-semibold flex items-center gap-2">
           <Terminal className="w-4 h-4" />
           comunidades
         </h3>
@@ -34,21 +34,21 @@ export function Communities({ userId }: CommunitiesProps) {
           {communities.map((community, i) => (
             <div
               key={i}
-              className="flex items-center justify-between py-2 border-b border-gray-100"
+              className="flex items-center justify-between py-2 border-b"
             >
               <Link
                 to={`/communities/${community.id}`}
-                className="font-medium text-sm text-[#2D3748]"
+                className="font-medium text-sm"
               >
                 {community.name}
               </Link>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-muted-foreground">
                 {community.memberCount.toLocaleString()} membros
               </div>
             </div>
           ))}
         </div>
-        <Button variant="link" className="w-full mt-4 text-[#2D3748] text-sm">
+        <Button variant="link" className="w-full mt-4 text-sm">
           Ver todas as comunidades
         </Button>
       </CardContent>

@@ -12,13 +12,14 @@ export class GetConnectionStatusController {
     @Param('userId') userId: string,
     @CurrentUser() user: UserPayload,
   ) {
-    const { status } = await this.getConnectionStatus.execute({
+    const { status, connectionId } = await this.getConnectionStatus.execute({
       userAId: user.sub,
       userBId: userId,
     })
 
     return {
       status,
+      connectionId,
     }
   }
 }

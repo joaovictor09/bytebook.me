@@ -9,6 +9,7 @@ interface GetConnectionStatusRequest {
 
 interface GetConnectionStatusResponse {
   status: ConnectionStatus | 'NONE'
+  connectionId: string | null
 }
 
 @Injectable()
@@ -27,11 +28,13 @@ export class GetConnectionStatusUseCase {
     if (!connection) {
       return {
         status: 'NONE',
+        connectionId: null,
       }
     }
 
     return {
       status: connection.status,
+      connectionId: connection.id,
     }
   }
 }

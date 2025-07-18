@@ -8,6 +8,7 @@ export type ConnectionWithUserStatus =
 
 interface GetConnectionWithUserStatusResponse {
   status: ConnectionWithUserStatus
+  connectionId: string | null
 }
 
 export function getConnectionWithUserStatus(id: string) {
