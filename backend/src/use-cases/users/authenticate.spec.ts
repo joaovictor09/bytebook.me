@@ -25,21 +25,25 @@ describe('Authenticate Use Case', () => {
       passwordHash: await fakeHasher.hash('123456'),
     })
 
-    const { accessToken } = await sut.execute({
+    const result = await sut.execute({
       username: 'johndoe',
       password: '123456',
     })
 
-    expect(accessToken).toEqual(expect.any(String))
+    expect(result.isRight()).toBeTruthy()
+    if (result.isRight()) {
+      expect(result.value.accessToken).toEqual(expect.any(String))
+    }
   })
 
   it('should not be able to authenticate with wrong username', async () => {
-    await expect(
-      sut.execute({
-        username: 'johndoe',
-        password: '123456',
-      }),
-    ).rejects.toBeInstanceOf(InvalidCredentialsError)
+    const result = await sut.execute({
+      username: 'johndoe',
+      password: '123456',
+    })
+
+    expect(result.isLeft()).toBeTruthy()
+    expect(result.value).toBeInstanceOf(InvalidCredentialsError)
   })
 
   it('should not be able to authenticate with wrong password', async () => {
@@ -49,11 +53,12 @@ describe('Authenticate Use Case', () => {
       passwordHash: await fakeHasher.hash('123456'),
     })
 
-    await expect(
-      sut.execute({
-        username: 'johndoe',
-        password: '123123',
-      }),
-    ).rejects.toBeInstanceOf(InvalidCredentialsError)
+    const result = await sut.execute({
+      username: 'johndoe',
+      password: '123123',
+    })
+
+    expect(result.isLeft()).toBeTruthy()
+    expect(result.value).toBeInstanceOf(InvalidCredentialsError)
   })
 })

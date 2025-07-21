@@ -3,15 +3,19 @@ import { InvalidCredentialsError } from '../_errors/invalid-credentials-error'
 import { HashComparer } from '@/cryptography/hash-comparer'
 import { Encrypter } from '@/cryptography/encrypter'
 import { Injectable } from '@nestjs/common'
+import { Either, left, right } from '@/utils/either'
 
 interface AuthenticateUseCaseRequest {
   username: string
   password: string
 }
 
-interface AuthenticateUseCaseResponse {
-  accessToken: string
-}
+type AuthenticateUseCaseResponse = Either<
+  InvalidCredentialsError,
+  {
+    accessToken: string
+  }
+>
 
 @Injectable()
 export class AuthenticateUseCase {
@@ -28,7 +32,7 @@ export class AuthenticateUseCase {
     const user = await this.usersRepository.findByUsername(username)
 
     if (!user) {
-      throw new InvalidCredentialsError()
+      return left(new InvalidCredentialsError())
     }
 
     const doesPasswordMatches = await this.hashComparer.compare(
@@ -37,15 +41,15 @@ export class AuthenticateUseCase {
     )
 
     if (!doesPasswordMatches) {
-      throw new InvalidCredentialsError()
+      return left(new InvalidCredentialsError())
     }
 
     const accessToken = await this.encrypter.encrypt({
       sub: user.id,
     })
 
-    return {
+    return right({
       accessToken,
-    }
+    })
   }
 }
