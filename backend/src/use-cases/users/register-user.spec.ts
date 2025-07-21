@@ -16,30 +16,37 @@ describe('Register User Use Case', () => {
   })
 
   it('should be able to register', async () => {
-    const { user } = await sut.execute({
+    const result = await sut.execute({
       username: 'johndoe',
       name: 'John Doe',
       password: '123456',
     })
 
-    expect(user.id).toEqual(expect.any(String))
+    expect(result.isRight()).toBeTruthy()
+    if (result.isRight()) {
+      expect(result.value.user.id).toEqual(expect.any(String))
+    }
   })
 
   it('should hash user password upon registration', async () => {
     const userPassword = '123456'
 
-    const { user } = await sut.execute({
+    const result = await sut.execute({
       name: 'John Doe',
       username: 'johndoe',
       password: userPassword,
     })
 
-    const isPasswordCorrectlyHashed = await fakeHasher.compare(
-      userPassword,
-      user.passwordHash,
-    )
+    expect(result.isRight()).toBeTruthy()
 
-    expect(isPasswordCorrectlyHashed).toBe(true)
+    if (result.isRight()) {
+      const isPasswordCorrectlyHashed = await fakeHasher.compare(
+        userPassword,
+        result.value.user.passwordHash,
+      )
+
+      expect(isPasswordCorrectlyHashed).toBe(true)
+    }
   })
 
   it('should not be able to register with same username twice', async () => {
@@ -53,7 +60,9 @@ describe('Register User Use Case', () => {
       })
 
     await registerUser()
+    const result = await registerUser()
 
-    await expect(registerUser).rejects.toBeInstanceOf(UserAlreadyExistsError)
+    expect(result.isLeft()).toBeTruthy()
+    expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
 })

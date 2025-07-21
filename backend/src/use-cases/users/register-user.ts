@@ -3,6 +3,7 @@ import { User } from '@prisma/client'
 import { HashGenerator } from '@/cryptography/hash-generator'
 import { Injectable } from '@nestjs/common'
 import { UsersRepository } from '@/repositories/users-repository'
+import { Either, left, right } from '@/utils/either'
 
 interface RegisterUserUseCaseRequest {
   name: string
@@ -10,9 +11,12 @@ interface RegisterUserUseCaseRequest {
   password: string
 }
 
-interface RegisterUserUseCaseResponse {
-  user: User
-}
+type RegisterUserUseCaseResponse = Either<
+  UserAlreadyExistsError,
+  {
+    user: User
+  }
+>
 
 @Injectable()
 export class RegisterUserUseCase {
@@ -32,7 +36,7 @@ export class RegisterUserUseCase {
       await this.usersRepository.findByUsername(username)
 
     if (userWithSameUsername) {
-      throw new UserAlreadyExistsError()
+      return left(new UserAlreadyExistsError())
     }
 
     const user = await this.usersRepository.create({
@@ -41,6 +45,6 @@ export class RegisterUserUseCase {
       passwordHash,
     })
 
-    return { user }
+    return right({ user })
   }
 }
