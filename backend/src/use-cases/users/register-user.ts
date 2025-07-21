@@ -6,7 +6,7 @@ import { UsersRepository } from '@/repositories/users-repository'
 
 interface RegisterUserUseCaseRequest {
   name: string
-  email: string
+  username: string
   password: string
 }
 
@@ -22,21 +22,22 @@ export class RegisterUserUseCase {
   ) {}
 
   async execute({
-    email,
+    username,
     name,
     password,
   }: RegisterUserUseCaseRequest): Promise<RegisterUserUseCaseResponse> {
     const passwordHash = await this.hasher.hash(password)
 
-    const userWithSameEmail = await this.usersRepository.findByEmail(email)
+    const userWithSameUsername =
+      await this.usersRepository.findByUsername(username)
 
-    if (userWithSameEmail) {
+    if (userWithSameUsername) {
       throw new UserAlreadyExistsError()
     }
 
     const user = await this.usersRepository.create({
+      username,
       name,
-      email,
       passwordHash,
     })
 

@@ -6,7 +6,7 @@ import { RegisterUserUseCase } from '@/use-cases/users/register-user'
 
 const createAccountBodySchema = z.object({
   name: z.string(),
-  email: z.string().email(),
+  username: z.string().min(4),
   password: z.string(),
 })
 
@@ -21,11 +21,11 @@ export class CreateAccountController {
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createAccountBodySchema))
   async handle(@Body() body: CreateAccountBodySchema) {
-    const { name, email, password } = body
+    const { name, username, password } = body
 
     await this.registerUser.execute({
       name,
-      email,
+      username,
       password,
     })
   }

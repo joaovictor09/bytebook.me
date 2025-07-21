@@ -2,6 +2,7 @@ import { ScrapsRepository } from '@/repositories/scraps-repository'
 import { Injectable } from '@nestjs/common'
 import { Prisma, Scrap } from '@prisma/client'
 import { PrismaService } from '../prisma.service'
+import { ScrapWithSenderDTO } from '@/dtos/scraps.dto'
 
 @Injectable()
 export class PrismaScrapsRepository implements ScrapsRepository {
@@ -37,6 +38,32 @@ export class PrismaScrapsRepository implements ScrapsRepository {
     })
 
     return scraps
+  }
+
+  async findManyWithSenderByRecipientId(
+    recipientId: string,
+  ): Promise<ScrapWithSenderDTO[]> {
+    const scraps = await this.prisma.scrap.findMany({
+      where: {
+        recipientId,
+      },
+      include: {
+        sender: true,
+      },
+    })
+
+    return scraps.map((scrap) => {
+      return {
+        id: scrap.id,
+        message: scrap.message,
+        recipientId: scrap.recipientId,
+        senderId: scrap.senderId,
+        sender: {
+          id: scrap.sender.id,
+          name: scrap.sender.name,
+        },
+      }
+    })
   }
 
   async delete(id: string): Promise<void> {

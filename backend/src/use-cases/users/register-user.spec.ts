@@ -17,8 +17,8 @@ describe('Register User Use Case', () => {
 
   it('should be able to register', async () => {
     const { user } = await sut.execute({
+      username: 'johndoe',
       name: 'John Doe',
-      email: 'johndoe@example.com',
       password: '123456',
     })
 
@@ -30,7 +30,7 @@ describe('Register User Use Case', () => {
 
     const { user } = await sut.execute({
       name: 'John Doe',
-      email: 'johndoe@example.com',
+      username: 'johndoe',
       password: userPassword,
     })
 
@@ -42,13 +42,13 @@ describe('Register User Use Case', () => {
     expect(isPasswordCorrectlyHashed).toBe(true)
   })
 
-  it('should not be able to register with same email twice', async () => {
-    const email = 'johndoe@example.com'
+  it('should not be able to register with same username twice', async () => {
+    const username = 'johndoe'
 
     const registerUser = async () =>
       await sut.execute({
         name: 'John Doe',
-        email,
+        username,
         password: '123456',
       })
 

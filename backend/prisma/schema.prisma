@@ -22,7 +22,7 @@ model User {
   id           String   @id @default(uuid())
   username     String   @unique
   name         String
-  email        String   @unique
+  email        String?  @unique
   passwordHash String   @map("password_hash")
   role         Role     @default(MEMBER)
   created_at   DateTime @default(now())
