@@ -38,7 +38,7 @@ export function Connections({ userId }: ConnectionsProps) {
               </div>
               <div>
                 <Link
-                  to={`/profiles/${connection.user.id}`}
+                  to={`/profiles/${connection.user.username}`}
                   className="font-medium text-sm"
                 >
                   {connection.user.name}

@@ -17,7 +17,7 @@ import { useForm } from 'react-hook-form'
 import z from 'zod'
 
 const formSchema = z.object({
-  email: z.email(),
+  username: z.string().min(4),
   password: z.string().min(1),
 })
 
@@ -27,13 +27,13 @@ export function SignInForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await signIn(values.email, values.password)
+    await signIn(values.username, values.password)
     await fetchUser()
   }
 
@@ -42,12 +42,12 @@ export function SignInForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="email"
+          name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>E-mail</FormLabel>
+              <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="dev@exemplo.com" {...field} />
+                <Input placeholder="devkut" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -1,11 +1,6 @@
 import { create } from 'zustand'
 import { api } from '@/lib/api'
-
-interface User {
-  id: string
-  name: string
-  email: string
-}
+import type { User } from '@/types/user'
 
 interface AuthStore {
   user: User | null

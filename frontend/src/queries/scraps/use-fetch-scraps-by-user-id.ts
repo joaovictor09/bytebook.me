@@ -1,10 +1,10 @@
-import { getUserById } from '@/api/users/get-user-by-id'
+import { fetchScrapsByUserId } from '@/api/scraps/fetch-scraps-by-user-id'
 import { useQuery } from '@tanstack/react-query'
 
-export function useGetUserById(id: string) {
+export function useFetchScrapsByUserId(id: string) {
   return useQuery({
-    queryKey: ['user', id],
-    queryFn: () => getUserById(id),
+    queryKey: ['user', id, 'scraps'],
+    queryFn: () => fetchScrapsByUserId(id),
     enabled: !!id,
   })
 }

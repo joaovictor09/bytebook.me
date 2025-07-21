@@ -19,7 +19,10 @@ export function Header() {
             <Link to={'/'} className="hover:underline">
               feed
             </Link>
-            <Link to={`/profiles/${user?.id}`} className="hover:underline">
+            <Link
+              to={`/profiles/${user?.username}`}
+              className="hover:underline"
+            >
               perfil
             </Link>
 

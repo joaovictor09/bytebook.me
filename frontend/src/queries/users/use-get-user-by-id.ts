@@ -1,10 +1,10 @@
-import { getUserById } from '@/api/users/get-user-by-id'
+import { getUserByUsername } from '@/api/users/get-user-by-username'
 import { useQuery } from '@tanstack/react-query'
 
-export function useGetUserById(id: string) {
+export function useGetUserByUsername(username: string) {
   return useQuery({
-    queryKey: ['user', id],
-    queryFn: () => getUserById(id),
-    enabled: !!id,
+    queryKey: ['user', username],
+    queryFn: () => getUserByUsername(username),
+    enabled: !!username,
   })
 }

@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
         element: <PrivateRoute />,
         children: [
           { index: true, element: <Home /> },
-          { path: '/profiles/:profileId', element: <Profile /> },
+          { path: '/profiles/:username', element: <Profile /> },
           { path: '/communities', element: <CommunitiesPage /> },
           { path: '/communities/:communityId', element: <CommunityPage /> },
         ],

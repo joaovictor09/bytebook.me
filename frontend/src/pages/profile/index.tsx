@@ -2,27 +2,21 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import {
-  User,
-  MapPin,
-  MessageCircle,
-  Terminal,
-  Pencil,
-  Send,
-} from 'lucide-react'
+import { User, MapPin, Terminal, Pencil, Send } from 'lucide-react'
 import { useParams } from 'react-router'
 import { useAuth } from '@/stores/use-auth'
-import { useGetUserById } from '@/queries/users/use-get-user-by-id'
+import { useGetUserByUsername } from '@/queries/users/use-get-user-by-id'
 import { Connections } from './components/connections'
 import { Communities } from './components/communities'
 import { ConnectButton } from './components/connect-button'
+import { Scraps } from './components/scraps'
 
 export function Profile() {
   const { user: authenticatedUser } = useAuth()
-  const { profileId } = useParams() as { profileId: string }
-  const isOwnProfile = authenticatedUser?.id === profileId
+  const { username } = useParams() as { username: string }
+  const isOwnProfile = authenticatedUser?.username === username
 
-  const { data, isLoading } = useGetUserById(profileId)
+  const { data, isLoading } = useGetUserByUsername(username)
 
   const userData = {
     name: isOwnProfile ? 'Seu Nome' : 'Maria Frontend',
@@ -87,7 +81,7 @@ export function Profile() {
                 </Button>
               ) : (
                 <div className="space-y-2">
-                  <ConnectButton userId={profileId} />
+                  <ConnectButton userId={user.id} />
                   <Button
                     variant="outline"
                     className="w-full text-sm bg-transparent"
@@ -167,77 +161,17 @@ export function Profile() {
 
             {/* Conexões */}
             <TabsContent value="connections" className="space-y-4">
-              <Connections userId={profileId} />
+              <Connections userId={user.id} />
             </TabsContent>
 
             {/* Comunidades */}
             <TabsContent value="communities" className="space-y-4">
-              <Communities userId={profileId} />
+              <Communities userId={user.id} />
             </TabsContent>
           </Tabs>
 
           {/* Recados/Mensagens (Simplificado) */}
-          <Card>
-            <CardHeader className="pb-2">
-              <h3 className="text-lg font-semibold  flex items-center gap-2">
-                <MessageCircle className="w-5 h-5" />
-                recados ({isOwnProfile ? '5' : '0'})
-              </h3>
-            </CardHeader>
-            <CardContent>
-              {isOwnProfile ? (
-                <div className="space-y-4">
-                  {[
-                    {
-                      author: 'Pedro Backend',
-                      message:
-                        'Oi! Vi seu projeto no GitHub, muito legal! Podemos conversar sobre a arquitetura?',
-                      time: '2 dias atrás',
-                    },
-                    {
-                      author: 'Ana DevOps',
-                      message:
-                        'Obrigada pela ajuda com o Docker ontem! Funcionou perfeitamente.',
-                      time: '3 dias atrás',
-                    },
-                  ].map((message, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start space-x-3 p-3 rounded border"
-                    >
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center bg-muted-foreground">
-                        <User className="w-4 h-4 text-muted" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-medium text-sm ">
-                            {message.author}
-                          </span>
-                          <span className="text-xs ">{message.time}</span>
-                        </div>
-                        <p className="text-sm ">{message.message}</p>
-                      </div>
-                    </div>
-                  ))}
-                  <Button variant="link" className="w-full  text-sm">
-                    Ver todos os recados
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <p className="text-sm ">
-                    Deixe um recado para {userData.name}:
-                  </p>
-                  <textarea
-                    className="w-full border rounded-md p-3 text-sm"
-                    rows={3}
-                    placeholder="Escreva sua mensagem..."
-                  ></textarea>
-                  <Button>Enviar Recado</Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <Scraps isOwnProfile={isOwnProfile} userId={user.id} />
         </div>
       </div>
     </div>
