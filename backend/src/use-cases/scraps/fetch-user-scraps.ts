@@ -1,13 +1,13 @@
-import { Scrap } from '@prisma/client'
 import { ScrapsRepository } from '@/repositories/scraps-repository'
 import { Injectable } from '@nestjs/common'
+import { ScrapWithSenderDTO } from '@/dtos/scraps.dto'
 
 interface FetchUserScrapsUseCaseRequest {
   userId: string
 }
 
 interface FetchUserScrapsUseCaseResponse {
-  scraps: Scrap[]
+  scraps: ScrapWithSenderDTO[]
 }
 
 @Injectable()
@@ -17,7 +17,8 @@ export class FetchUserScrapsUseCase {
   async execute({
     userId,
   }: FetchUserScrapsUseCaseRequest): Promise<FetchUserScrapsUseCaseResponse> {
-    const scraps = await this.scrapsRepository.findManyByRecipientId(userId)
+    const scraps =
+      await this.scrapsRepository.findManyWithSenderByRecipientId(userId)
 
     return { scraps }
   }

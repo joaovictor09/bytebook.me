@@ -1,12 +1,15 @@
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { FetchUserScrapsUseCase } from './fetch-user-scraps'
 import { InMemoryScrapsRepository } from 'test/repositories/in-memory-scraps-repository'
 
+let usersRepository: InMemoryUsersRepository
 let scrapsRepository: InMemoryScrapsRepository
 let sut: FetchUserScrapsUseCase
 
 describe('Fetch User Scraps Use Case', () => {
   beforeEach(() => {
-    scrapsRepository = new InMemoryScrapsRepository()
+    usersRepository = new InMemoryUsersRepository()
+    scrapsRepository = new InMemoryScrapsRepository(usersRepository)
     sut = new FetchUserScrapsUseCase(scrapsRepository)
   })
 
