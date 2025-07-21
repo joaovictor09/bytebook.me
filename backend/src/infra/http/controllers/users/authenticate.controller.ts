@@ -6,7 +6,7 @@ import { AuthenticateUseCase } from '@/use-cases/users/authenticate'
 import { Response } from 'express'
 
 const authenticateBodySchema = z.object({
-  email: z.string().email(),
+  username: z.string().min(4),
   password: z.string(),
 })
 
@@ -23,10 +23,10 @@ export class AuthenticateController {
     @Body() body: AuthenticateBodySchema,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { email, password } = body
+    const { username, password } = body
 
     const result = await this.authenticate.execute({
-      email,
+      username,
       password,
     })
 

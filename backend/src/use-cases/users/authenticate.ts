@@ -5,7 +5,7 @@ import { Encrypter } from '@/cryptography/encrypter'
 import { Injectable } from '@nestjs/common'
 
 interface AuthenticateUseCaseRequest {
-  email: string
+  username: string
   password: string
 }
 
@@ -22,10 +22,10 @@ export class AuthenticateUseCase {
   ) {}
 
   async execute({
-    email,
+    username,
     password,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    const user = await this.usersRepository.findByEmail(email)
+    const user = await this.usersRepository.findByUsername(username)
 
     if (!user) {
       throw new InvalidCredentialsError()

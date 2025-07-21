@@ -11,20 +11,20 @@ let sut: SendScrapUseCase
 describe('Send Scrap Use Case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    scrapsRepository = new InMemoryScrapsRepository()
+    scrapsRepository = new InMemoryScrapsRepository(usersRepository)
     sut = new SendScrapUseCase(usersRepository, scrapsRepository)
   })
 
   it('should send a scrap successfully', async () => {
     const sender = await usersRepository.create({
       name: 'Alice',
-      email: 'alice@example.com',
+      username: 'alice',
       passwordHash: 'hash123',
     })
 
     const recipient = await usersRepository.create({
       name: 'Bob',
-      email: 'bob@example.com',
+      username: 'bob',
       passwordHash: 'hash456',
     })
 
@@ -43,7 +43,7 @@ describe('Send Scrap Use Case', () => {
   it('should throw if sender does not exist', async () => {
     const recipient = await usersRepository.create({
       name: 'Bob',
-      email: 'bob@example.com',
+      username: 'bob',
       passwordHash: 'hash456',
     })
 
@@ -59,7 +59,7 @@ describe('Send Scrap Use Case', () => {
   it('should throw if recipient does not exist', async () => {
     const sender = await usersRepository.create({
       name: 'Alice',
-      email: 'alice@example.com',
+      username: 'alice',
       passwordHash: 'hash123',
     })
 
@@ -75,7 +75,7 @@ describe('Send Scrap Use Case', () => {
   it('should throw if sender and recipient are the same user', async () => {
     const user = await usersRepository.create({
       name: 'Alice',
-      email: 'alice@example.com',
+      username: 'alice',
       passwordHash: 'hash123',
     })
 
