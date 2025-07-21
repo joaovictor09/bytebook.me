@@ -1,9 +1,9 @@
 import { UserAlreadyExistsError } from '../_errors/user-already-exists-error'
-import { User } from '@prisma/client'
 import { HashGenerator } from '@/cryptography/hash-generator'
 import { Injectable } from '@nestjs/common'
 import { UsersRepository } from '@/repositories/users-repository'
 import { Either, left, right } from '@/utils/either'
+import { UserDto } from '@/dtos/users.dto'
 
 interface RegisterUserUseCaseRequest {
   name: string
@@ -14,7 +14,7 @@ interface RegisterUserUseCaseRequest {
 type RegisterUserUseCaseResponse = Either<
   UserAlreadyExistsError,
   {
-    user: User
+    user: UserDto
   }
 >
 
@@ -45,6 +45,12 @@ export class RegisterUserUseCase {
       passwordHash,
     })
 
-    return right({ user })
+    return right({
+      user: {
+        id: user.id,
+        name: user.name,
+        username: user.username,
+      },
+    })
   }
 }

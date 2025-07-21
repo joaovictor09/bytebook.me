@@ -39,13 +39,21 @@ describe('Register User Use Case', () => {
 
     expect(result.isRight()).toBeTruthy()
 
-    if (result.isRight()) {
-      const isPasswordCorrectlyHashed = await fakeHasher.compare(
-        userPassword,
-        result.value.user.passwordHash,
-      )
+    const userInRepository = usersRepository.items.find(
+      (user) => user.username === 'johndoe',
+    )
 
-      expect(isPasswordCorrectlyHashed).toBe(true)
+    expect(userInRepository).toBeTruthy()
+
+    if (userInRepository) {
+      if (result.isRight()) {
+        const isPasswordCorrectlyHashed = await fakeHasher.compare(
+          userPassword,
+          userInRepository.passwordHash,
+        )
+
+        expect(isPasswordCorrectlyHashed).toBe(true)
+      }
     }
   })
 
