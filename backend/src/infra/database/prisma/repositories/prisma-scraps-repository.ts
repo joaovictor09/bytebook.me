@@ -61,6 +61,7 @@ export class PrismaScrapsRepository implements ScrapsRepository {
         sender: {
           id: scrap.sender.id,
           name: scrap.sender.name,
+          username: scrap.sender.username,
         },
       }
     })

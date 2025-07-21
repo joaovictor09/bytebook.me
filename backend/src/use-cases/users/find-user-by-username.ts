@@ -4,11 +4,11 @@ import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
 import { Either, left, right } from '@/utils/either'
 import { UserDto } from '@/dtos/users.dto'
 
-interface FindUserByIdUseCaseRequest {
-  userId: string
+interface FindUserByUsernameUseCaseRequest {
+  username: string
 }
 
-type FindUserByIdUseCaseResponse = Either<
+type FindUserByUsernameUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     user: UserDto
@@ -16,13 +16,13 @@ type FindUserByIdUseCaseResponse = Either<
 >
 
 @Injectable()
-export class FindUserByIdUseCase {
+export class FindUserByUsernameUseCase {
   constructor(private usersRepository: UsersRepository) {}
 
   async execute({
-    userId,
-  }: FindUserByIdUseCaseRequest): Promise<FindUserByIdUseCaseResponse> {
-    const user = await this.usersRepository.findById(userId)
+    username,
+  }: FindUserByUsernameUseCaseRequest): Promise<FindUserByUsernameUseCaseResponse> {
+    const user = await this.usersRepository.findByUsername(username)
 
     if (!user) {
       return left(new ResourceNotFoundError())

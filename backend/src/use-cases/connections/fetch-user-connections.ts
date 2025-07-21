@@ -39,6 +39,7 @@ export class FetchUserConnectionsUseCase {
           user: {
             id: friend.id,
             name: friend.name,
+            username: friend.username,
           },
         }
       }),

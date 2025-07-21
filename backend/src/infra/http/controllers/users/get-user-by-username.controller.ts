@@ -3,20 +3,19 @@ import {
   Controller,
   Get,
   NotFoundException,
+  Param,
 } from '@nestjs/common'
-import { CurrentUser } from '@/infra/auth/current-user-decorator'
-import { UserPayload } from '@/infra/auth/jwt.strategy'
-import { FindUserByIdUseCase } from '@/use-cases/users/find-user-by-id'
 import { ResourceNotFoundError } from '@/use-cases/_errors/resource-not-found-error'
+import { FindUserByUsernameUseCase } from '@/use-cases/users/find-user-by-username'
 
-@Controller('/me')
-export class GetMeController {
-  constructor(private findUserById: FindUserByIdUseCase) {}
+@Controller('/users/:username')
+export class GetUserByUsernameController {
+  constructor(private findByUsername: FindUserByUsernameUseCase) {}
 
   @Get()
-  async handle(@CurrentUser() user: UserPayload) {
-    const result = await this.findUserById.execute({
-      userId: user.sub,
+  async handle(@Param('username') username: string) {
+    const result = await this.findByUsername.execute({
+      username,
     })
 
     if (result.isLeft()) {

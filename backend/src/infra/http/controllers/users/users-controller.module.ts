@@ -8,7 +8,8 @@ import { CreateAccountController } from './create-account.controller'
 import { GetMeController } from './get-me.controller'
 import { FindUserByIdUseCase } from '@/use-cases/users/find-user-by-id'
 import { LogoutController } from './logout.controller'
-import { GetUserByIdController } from './get-user-by-id.controller'
+import { GetUserByUsernameController } from './get-user-by-username.controller'
+import { FindUserByUsernameUseCase } from '@/use-cases/users/find-user-by-username'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -17,8 +18,13 @@ import { GetUserByIdController } from './get-user-by-id.controller'
     AuthenticateController,
     GetMeController,
     LogoutController,
-    GetUserByIdController,
+    GetUserByUsernameController,
   ],
-  providers: [RegisterUserUseCase, AuthenticateUseCase, FindUserByIdUseCase],
+  providers: [
+    RegisterUserUseCase,
+    AuthenticateUseCase,
+    FindUserByIdUseCase,
+    FindUserByUsernameUseCase,
+  ],
 })
 export class UsersControllerModule {}

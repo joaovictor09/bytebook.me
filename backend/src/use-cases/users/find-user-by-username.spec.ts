@@ -1,14 +1,14 @@
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { FindUserByIdUseCase } from './find-user-by-id'
 import { ResourceNotFoundError } from '../_errors/resource-not-found-error'
+import { FindUserByUsernameUseCase } from './find-user-by-username'
 
-describe('Find User By ID Use Case', () => {
+describe('Find User By Username Use Case', () => {
   let usersRepository: InMemoryUsersRepository
-  let findUserByIdUseCase: FindUserByIdUseCase
+  let findUserByUsernameUseCase: FindUserByUsernameUseCase
 
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    findUserByIdUseCase = new FindUserByIdUseCase(usersRepository)
+    findUserByUsernameUseCase = new FindUserByUsernameUseCase(usersRepository)
   })
 
   it('should return the user when given a valid ID', async () => {
@@ -18,8 +18,8 @@ describe('Find User By ID Use Case', () => {
       passwordHash: 'hashed-password',
     })
 
-    const result = await findUserByIdUseCase.execute({
-      userId: createdUser.id,
+    const result = await findUserByUsernameUseCase.execute({
+      username: createdUser.username,
     })
 
     expect(result.isRight()).toBeTruthy()
@@ -35,8 +35,8 @@ describe('Find User By ID Use Case', () => {
   })
 
   it('should throw ResourceNotFoundError if user does not exist', async () => {
-    const result = await findUserByIdUseCase.execute({
-      userId: 'non-existent-id',
+    const result = await findUserByUsernameUseCase.execute({
+      username: 'non-existent-username',
     })
 
     expect(result.isLeft).toBeTruthy()
