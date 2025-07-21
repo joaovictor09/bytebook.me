@@ -1,9 +1,18 @@
-import { Body, Controller, Post, Res, UsePipes } from '@nestjs/common'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  Res,
+  UnauthorizedException,
+  UsePipes,
+} from '@nestjs/common'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
 import { Public } from '@/infra/auth/public'
 import { AuthenticateUseCase } from '@/use-cases/users/authenticate'
 import { Response } from 'express'
+import { InvalidCredentialsError } from '@/use-cases/_errors/invalid-credentials-error'
 
 const authenticateBodySchema = z.object({
   username: z.string().min(4),
@@ -30,7 +39,18 @@ export class AuthenticateController {
       password,
     })
 
-    const accessToken = result.accessToken
+    if (result.isLeft()) {
+      const error = result.value
+
+      switch (error.constructor) {
+        case InvalidCredentialsError:
+          throw new UnauthorizedException(error.message)
+        default:
+          throw new BadRequestException(error.message)
+      }
+    }
+
+    const accessToken = result.value.accessToken
 
     res.cookie('access_token', accessToken, {
       httpOnly: true,
