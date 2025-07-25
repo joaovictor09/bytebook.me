@@ -1,64 +1,25 @@
-import Header from '@/components/Header'
-import { api } from '@/lib/axios'
+import Header from '@/components/header'
 import { createFileRoute, Navigate, Outlet } from '@tanstack/react-router'
-import { isAxiosError } from 'axios'
-import { useEffect, useState } from 'react'
 import { AppSkeleton } from './-components/skeleton'
+import { AuthProvider, useAuth } from './-components/auth-context'
 
 export const Route = createFileRoute('/_app')({
-  component: RouteComponent,
+  component: () => (
+    <AuthProvider>
+      <RouteComponent />
+    </AuthProvider>
+  ),
 })
 
-interface User {
-  id: string
-  username: string
-}
-
 function RouteComponent() {
-  const navigate = Route.useNavigate()
-  const [user, setUser] = useState<User | undefined | null>(undefined)
+  const { user, isLoading } = useAuth()
 
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await api.get('/me')
-
-        setUser(response.data)
-      } catch {
-        setUser(null)
-      }
-      const response = await api.get('/me')
-      if (response.status === 200) {
-        setUser(response.data)
-      }
-    }
-
-    const interceptorId = api.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (isAxiosError(error)) {
-          const status = error.response?.status
-          const code = error.response?.data?.code
-
-          if (status === 401 && code === 'UNAUTHORIZED') {
-            navigate({ to: '/sign-in', replace: true })
-          }
-        }
-      },
-    )
-
-    return () => {
-      getUser()
-      api.interceptors.response.eject(interceptorId)
-    }
-  }, [navigate])
-
-  if (user === null) {
-    return <Navigate to="/sign-in" />
+  if (isLoading) {
+    return <AppSkeleton />
   }
 
-  if (user === undefined) {
-    return <AppSkeleton />
+  if (!user) {
+    return <Navigate to="/sign-in" replace />
   }
 
   return (
