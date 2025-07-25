@@ -1,11 +1,3 @@
 {
-  "extends": [
-    "@rocketseat/eslint-config/react"
-  ],
-  "rules": {
-    "no-useless-constructor": "off",
-    "no-new": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "camelcase": "off"
-  }
+  "extends": "@rocketseat/eslint-config/react"
 }
