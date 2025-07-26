@@ -8,6 +8,10 @@ import { signIn } from '@/api/sign-in'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 
+const signInSearchSchema = z.object({
+  username: z.string().optional(),
+})
+
 export const Route = createFileRoute('/_auth/sign-in')({
   component: RouteComponent,
   head: () => ({
@@ -17,6 +21,7 @@ export const Route = createFileRoute('/_auth/sign-in')({
       },
     ],
   }),
+  validateSearch: (search) => signInSearchSchema.parse(search),
 })
 
 const signInForm = z.object({
@@ -28,12 +33,17 @@ type SignInForm = z.infer<typeof signInForm>
 
 function RouteComponent() {
   const navigate = Route.useNavigate()
+  const { username } = Route.useSearch()
 
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<SignInForm>({})
+  } = useForm<SignInForm>({
+    defaultValues: {
+      username,
+    },
+  })
 
   const { mutateAsync: authenticate } = useMutation({ mutationFn: signIn })
 

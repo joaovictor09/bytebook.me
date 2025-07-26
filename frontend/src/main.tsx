@@ -10,6 +10,7 @@ import reportWebVitals from './reportWebVitals.ts'
 import { queryClient } from './lib/react-query.ts'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from './components/ui/sonner.tsx'
+import { ThemeProvider } from './components/theme-provider.tsx'
 
 // Create a new router instance
 const router = createRouter({
@@ -36,10 +37,12 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <Toaster richColors />
-        <RouterProvider router={router} />
-      </QueryClientProvider>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <Toaster richColors />
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </ThemeProvider>
     </StrictMode>,
   )
 }
