@@ -11,6 +11,14 @@ import { getUserDetails } from '@/api/get-user-details'
 
 export const Route = createFileRoute('/_app/profile/$username/')({
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      {
+        // TODO: implement this
+        title: 'cleitinho (Joao Victor) | bytebook.me',
+      },
+    ],
+  }),
 })
 
 function RouteComponent() {

@@ -13,7 +13,7 @@ export const Route = createRootRouteWithContext<{
   head: () => ({
     meta: [
       {
-        title: 'Devkut',
+        title: 'bytebook.me',
       },
     ],
   }),
