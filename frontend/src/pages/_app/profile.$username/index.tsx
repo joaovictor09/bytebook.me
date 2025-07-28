@@ -56,6 +56,7 @@ function RouteComponent() {
   return (
     <DefaultLayout>
       <ProfileHeader
+        userId={userDetails.id}
         isAuthenticatedUser={isAuthenticatedUser}
         communities={userDetails.communities}
         connections={userDetails.connections}

@@ -2,9 +2,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Calendar, Edit, Github, Globe, Linkedin, MapPin } from 'lucide-react'
+import { FollowButton } from './follow-button'
 
 interface ProfileHeaderProps {
   isAuthenticatedUser: boolean
+  userId: string
   fullname: string
   title: string | null
   location: string | null
@@ -24,6 +26,7 @@ export function ProfileHeader(props: ProfileHeaderProps) {
     title,
     memberSince,
     isAuthenticatedUser,
+    userId,
   } = props
 
   return (
@@ -38,11 +41,13 @@ export function ProfileHeader(props: ProfileHeaderProps) {
           <div className="flex-1">
             <div className="flex items-center space-x-3 mb-2">
               <h1 className="text-3xl font-bold">{fullname}</h1>
-              {isAuthenticatedUser && (
+              {isAuthenticatedUser ? (
                 <Button size="sm" variant="outline">
                   <Edit className="w-4 h-4 mr-2" />
                   Editar Perfil
                 </Button>
+              ) : (
+                <FollowButton userId={userId} />
               )}
             </div>
 
