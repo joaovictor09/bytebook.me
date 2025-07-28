@@ -22,6 +22,7 @@ export abstract class ConnectionsRepository {
   ): Promise<Connection | null>
 
   abstract findById(id: string): Promise<Connection | null>
+  abstract countActiveByUserId(userId: string): Promise<number>
 
   abstract accept(connectionId: string): Promise<Connection>
   abstract decline(connectionId: string): Promise<Connection>

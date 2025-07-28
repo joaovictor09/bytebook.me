@@ -67,6 +67,16 @@ export class PrismaScrapsRepository implements ScrapsRepository {
     })
   }
 
+  async countByUserId(userId: string): Promise<number> {
+    const count = await this.prisma.scrap.count({
+      where: {
+        recipientId: userId,
+      },
+    })
+
+    return count
+  }
+
   async delete(id: string): Promise<void> {
     await this.prisma.scrap.delete({
       where: { id },

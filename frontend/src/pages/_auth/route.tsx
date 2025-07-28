@@ -1,5 +1,4 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
-import { Pizza } from 'lucide-react'
 
 export const Route = createFileRoute('/_auth')({
   component: RouteComponent,

@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
@@ -61,7 +61,7 @@ function RouteComponent() {
 
   return (
     <div className="p-8">
-      <Button variant={'ghost'} asChild className="absolute right-8 top-8 ">
+      <Button variant={'ghost'} asChild className="absolute right-8 top-8">
         <Link to={'/sign-up'}>Criar conta</Link>
       </Button>
 

@@ -9,5 +9,7 @@ export abstract class ScrapsRepository {
     recipientId: string,
   ): Promise<ScrapWithSenderDTO[]>
 
+  abstract countByUserId(userId: string): Promise<number>
+
   abstract delete(id: string): Promise<void>
 }

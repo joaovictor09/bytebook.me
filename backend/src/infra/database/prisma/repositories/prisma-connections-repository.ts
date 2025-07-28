@@ -30,6 +30,17 @@ export class PrismaConnectionsRepository implements ConnectionsRepository {
     })
   }
 
+  async countActiveByUserId(userId: string): Promise<number> {
+    const count = await this.prisma.connection.count({
+      where: {
+        OR: [{ recipientId: userId }, { senderId: userId }],
+        status: 'ACCEPTED',
+      },
+    })
+
+    return count
+  }
+
   async accept(connectionId: string): Promise<Connection> {
     return this.prisma.connection.update({
       where: { id: connectionId },

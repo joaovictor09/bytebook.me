@@ -10,6 +10,8 @@ import { FindUserByIdUseCase } from '@/use-cases/users/find-user-by-id'
 import { LogoutController } from './logout.controller'
 import { GetUserByUsernameController } from './get-user-by-username.controller'
 import { FindUserByUsernameUseCase } from '@/use-cases/users/find-user-by-username'
+import { GetUserDetailsByUsername } from '@/use-cases/users/get-user-details-by-username'
+import { GetUserDetailsByUsernameController } from './get-user-details-by-username.controller'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -19,12 +21,14 @@ import { FindUserByUsernameUseCase } from '@/use-cases/users/find-user-by-userna
     GetMeController,
     LogoutController,
     GetUserByUsernameController,
+    GetUserDetailsByUsernameController,
   ],
   providers: [
     RegisterUserUseCase,
     AuthenticateUseCase,
     FindUserByIdUseCase,
     FindUserByUsernameUseCase,
+    GetUserDetailsByUsername,
   ],
 })
 export class UsersControllerModule {}

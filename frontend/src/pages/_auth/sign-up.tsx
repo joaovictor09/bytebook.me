@@ -1,12 +1,11 @@
 import { signUp } from '@/api/sign-up'
 import { useMutation } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
-import { Link } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import {
   Form,
@@ -77,8 +76,8 @@ function RouteComponent() {
 
   return (
     <div className="p-8">
-      <Button variant={'ghost'} asChild className="absolute right-8 top-8 ">
-        <Link to={'/sign-up'}>Acessar conta</Link>
+      <Button variant={'ghost'} asChild className="absolute right-8 top-8">
+        <Link to={'/sign-in'}>Acessar conta</Link>
       </Button>
 
       <div className="flex w-[350px] flex-col justify-center gap-6">

@@ -47,6 +47,16 @@ export class PrismaCommunitiesRepository implements CommunitiesRepository {
     })
   }
 
+  async countByUserId(userId: string): Promise<number> {
+    const count = await this.prisma.communityMember.count({
+      where: {
+        userId,
+      },
+    })
+
+    return count
+  }
+
   async incrementMemberCount(id: string): Promise<void> {
     await this.prisma.community.update({
       where: { id },
