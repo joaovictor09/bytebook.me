@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Calendar, Edit, Github, Globe, Linkedin, MapPin } from 'lucide-react'
 
 interface ProfileHeaderProps {
+  isAuthenticatedUser: boolean
   fullname: string
   title: string | null
   location: string | null
@@ -22,6 +23,7 @@ export function ProfileHeader(props: ProfileHeaderProps) {
     scraps,
     title,
     memberSince,
+    isAuthenticatedUser,
   } = props
 
   return (
@@ -36,19 +38,24 @@ export function ProfileHeader(props: ProfileHeaderProps) {
           <div className="flex-1">
             <div className="flex items-center space-x-3 mb-2">
               <h1 className="text-3xl font-bold">{fullname}</h1>
-              <Button size="sm" variant="outline">
-                <Edit className="w-4 h-4 mr-2" />
-                Editar Perfil
-              </Button>
+              {isAuthenticatedUser && (
+                <Button size="sm" variant="outline">
+                  <Edit className="w-4 h-4 mr-2" />
+                  Editar Perfil
+                </Button>
+              )}
             </div>
 
             <p className="text-xl text-gray-600 mb-3">{title}</p>
 
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-4">
-              <div className="flex items-center space-x-1">
-                <MapPin className="w-4 h-4" />
-                <span>{location}</span>
-              </div>
+              {location && (
+                <div className="flex items-center space-x-1">
+                  <MapPin className="w-4 h-4" />
+
+                  <span>{location}</span>
+                </div>
+              )}
               <div className="flex items-center space-x-1">
                 <Calendar className="w-4 h-4" />
                 <span>

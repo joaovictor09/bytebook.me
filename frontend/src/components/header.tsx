@@ -1,11 +1,13 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 import { Button } from './ui/button'
 import { useAuth } from '@/pages/_app/-components/auth-context'
 import { ThemeToggle } from './theme-toggle'
 import { Separator } from './ui/separator'
+import { cn } from '@/lib/utils'
 
 export default function Header() {
   const { logout, user } = useAuth()
+  const { pathname } = useLocation()
 
   return (
     <header className="py-2 shadow drop-shadow-2xl border-b">
@@ -21,24 +23,20 @@ export default function Header() {
           <Separator orientation="vertical" className="min-h-6" />
 
           <div className="hidden md:flex space-x-6">
-            <Link to="/" className="font-medium">
-              Home
-            </Link>
-            <Link
+            <HeaderLink isActive={pathname === '/'} title="Home" to="/" />
+            <HeaderLink
+              isActive={pathname.startsWith('/profile')}
+              title="Perfil"
               to={`/profile/$username`}
               params={{
                 username: user?.username ?? '',
               }}
-              className="text-muted-foreground hover:text-muted-foreground/80 transition font-medium"
-            >
-              Perfil
-            </Link>
-            <Link
+            />
+            <HeaderLink
+              isActive={pathname.startsWith('/communities')}
+              title="Comunidades"
               to="/communities"
-              className="text-muted-foreground hover:text-muted-foreground/80 transition font-medium"
-            >
-              Comunidades
-            </Link>
+            />
           </div>
         </nav>
         <div className="flex items-center gap-4">
@@ -49,5 +47,28 @@ export default function Header() {
         </div>
       </div>
     </header>
+  )
+}
+
+interface HeaderLinkProps {
+  isActive: boolean
+  title: string
+  params?: Record<string, string>
+  to: string
+}
+
+function HeaderLink({ isActive, title, to, params }: HeaderLinkProps) {
+  return (
+    <Link
+      to={to}
+      params={params}
+      className={cn(
+        isActive
+          ? 'font-medium'
+          : 'text-muted-foreground hover:text-muted-foreground/80 transition font-medium',
+      )}
+    >
+      {title}
+    </Link>
   )
 }

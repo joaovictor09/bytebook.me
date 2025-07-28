@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Scraps } from './-components/scraps'
 import { useQuery } from '@tanstack/react-query'
 import { getUserDetails } from '@/api/get-user-details'
+import { useAuth } from '../-components/auth-context'
 
 export const Route = createFileRoute('/_app/profile/$username/')({
   component: RouteComponent,
@@ -22,6 +23,7 @@ export const Route = createFileRoute('/_app/profile/$username/')({
 })
 
 function RouteComponent() {
+  const { user } = useAuth()
   const { username } = Route.useParams()
 
   const { data, isLoading } = useQuery({
@@ -49,9 +51,12 @@ function RouteComponent() {
 
   const { user: userDetails } = data
 
+  const isAuthenticatedUser = user?.username === username
+
   return (
     <DefaultLayout>
       <ProfileHeader
+        isAuthenticatedUser={isAuthenticatedUser}
         communities={userDetails.communities}
         connections={userDetails.connections}
         fullname={userDetails.name}
